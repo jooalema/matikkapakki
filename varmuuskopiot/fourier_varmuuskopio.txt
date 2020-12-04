@@ -1,0 +1,509 @@
+``` {id="33Xl15cr3gD4" plugin="timTable"}
+# forcedEditMode: true
+table:
+    countRow: 5
+    countCol: 2
+    textAlign: left 
+    border: 3px solid
+    rows:
+      - row:
+        - cell: '[Sivun aiheet]{.maaritelma .isolla}   '
+        - cell: '[Katso myös]{.timsininen .isolla}'
+        backgroundColor: lightgray
+        fontWeight: bold
+      - row:
+        - cell: "**Fourier'n sarja**"
+        - cell: '$\phantom{a}$'
+        border: 2px solid white
+        borderTop: 3px solid 
+      - row:
+        - cell: "○ [Fourier'n sarja](#fourier)"
+        - cell: '○ [Sarjat](%%sarjat%%/sarjat_osa1)'
+        border: 2px solid white
+      - row:
+        - cell: "○ [Reaalinen Fourier'n sarja](#reaalinen)"
+        - cell: '- [Aritmeettinen-](%%sarjat%%/sarjat_osa1#aritmeettinen), [geometrinen-](%%sarjat%%/sarjat_osa1#geometrinen), [potenssisarja](%%sarjat%%/sarjat_osa1#potenssisarja)'
+        border: 2px solid white
+      - row:
+        - cell: "○ [Kompleksinen Fourier'n sarja](#kompleksinen)"
+        - cell: '○ [Muut sarjat](%%sarjat%%/erikoissarjat)'
+        border: 2px solid white             
+      - row:
+        - cell: '$\phantom{fourierin sarjat on pitkiä}$'
+        - cell: '- [Binomisarja](%%sarjat%%/erikoissarjat#binomisarja), [Legendren polynomi](%%sarjat%%/erikoissarjat#legendre)'
+        border: 2px solid white   
+      - row:
+        - cell: "○ [Fourier'n approksimointi graafisesti](#fourierpython)"
+        - cell: '○ [Taylorin sarja](%%sarjat%%/taylorin_sarja)'
+        border: 2px solid white      
+
+```
+
+# %%työnalla%% Fourier'n sarja%%työnalla%% {id="m4b7FXftqJ2U"}
+
+## Fourier'n sarja %%työnalla%% {id="aTU88CgIZKit" .maaritelma #fourier}
+
+#- {id="Z37hROz1S19M"}
+Taylorin sarjaa käytetään approksimoimaan funktiota jonkun pisteen $a$ läheisyydessä,
+kun funktio on jatkuva tässä pisteessä. Joskus tulee kuitenkin vastaan epäjatkuvia
+funktioita, jolloin Taylorin sarjan käyttö ei ole mahdollista.
+
+Epäjatkuvia funktioita tai funktioita, joiden kuvaajassa on teräviä kulmia, kuten $f(x)=|x|$
+ei voida approksimoida Taylorin sarjan avulla, mutta niitä voidaan approksimoida
+Fourier'n sarjan avulla.
+
+**Fourier'n sarjalla** approksimoidaan funktiota jaksollisilla funktioilla ja erityisesti
+Fourier'n sarjalla approksimoidaan jaksollisia funktioita koko
+reaalilukuakselilla tai  suljetulla välillä määriteltyä funktiota, joka voidaan
+jatkaa jaksolliseksi funktioksi koko reaalilukuakselille.
+
+#- {id="fR8xaFYlSEB2"}
+[Funktio $f(x)$ on $p$-jaksollinen, jos
+$$
+f(x+p) = f(x)
+$$
+kaikilla $x$. Jos $f(x)$ on $p$-jaksollinen, niin se on myös $np$-jaksollinen, 
+missä $n=2,3,\dots$ . Lukua $p$ sanotaan funktion $f(x)$ perusjaksoksi.
+]{.huomautus}
+
+#- {id="2lnpgjllZWR0"}
+Esimerkiksi funkiot $\sin(x)$ ja $\cos(x)$ ovat jaksollisia ja niiden jakso on $2\pi$.
+Jaksoa voi tarkastella millä tahansa $2\pi$-pituisella välillä. Alla olevassa kuvassa jaksoa tarkastellaan kohdissa $-3\pi, \, -\pi,\, \pi$ ja $3\pi$.
+
+#- {id="ezsxKMxkzjUF" math_type="svg" math_preamble="\\usepackage{pgfplots}"}
+\begin{tikzpicture}
+\begin{axis}[domain=-3.2*pi:3.2*pi, samples=100, %grid=major,
+   % restrict y to domain=-1.25:1.25, 
+   legend pos = outer north east,
+    axis lines= middle,
+    xtick={-3*pi, -pi, pi, 3*pi},
+    xticklabel style = {xshift=-0.2cm},
+    xticklabels={$-3\pi$,$-\pi$,$\pi$,$3\pi$},
+    %ytick={-2, -1, 1,2},
+    %yticklabels={-2,-1, 1,2},
+    %yticklabel style = {yshift=0.2cm},
+    xlabel=$x$,
+    ylabel=$y$]
+\addplot [color=blue, thick]   {sin(deg(x))};
+\addplot [color=red, thick]    {cos(deg(x))}; 
+%\addplot +[mark=none, color=black, loosely dashed,] coordinates {(0, -5) (0,5)};
+\addplot +[mark=none, color=black!50!white, loosely dashed, ] coordinates {(pi, -5) (pi,5)};
+\addplot +[mark=none, color=black!50!white, loosely dashed, ] coordinates {(-pi, -5) (-pi,5)};
+\addplot +[mark=none, color=black!50!white, loosely dashed, ] coordinates {(-3*pi, -5) (-3*pi,5)};
+\addplot +[mark=none, color=black!50!white, loosely dashed, ] coordinates {(3*pi, -5) (3*pi,5)};
+\legend{$\sin (x)$, $\cos (x)$}
+\end{axis}
+\end{tikzpicture}
+
+## Reaalinen Fourier'n sarja {id="nCQhGpOSRtTv" .timoranssi #reaalinenfourier}
+
+#- {id="jYrJgCnLMt7X"}
+[$2L$-jaksollisen funktion $f(x)$ Fourier'n sarja on
+$$
+f(x) = \frac{a_0}{2} + \sum_{k=1}^{\infty}\left[a_k\cos\left(\frac{k\pi x}{L}\right)
++b_k\sin\left(\frac{k\pi x}{L}\right)\right],
+$$
+missä
+$$
+a_k = \frac{1}{L}\int\displaylimits_{-L}^{L} f(x)\cos\left(\frac{k\pi x}{L}\right)\dx
+$$
+ja
+$$
+b_k = \frac{1}{L}\int\displaylimits_{-L}^{L}f(x)\sin\left(\frac{k\pi x}{L}\right)\dx
+$$
+ovat Fourier'n sarjan kertoimet.
+]{.huomautus}
+
+#- {id="aQeWrxQxbOrO" area="real_fourier_esim" collapse="true"}
+[**Esimerkki**. Määritä funktion $f(x)=\begin{cases}1, & 0\leq x\leq \pi\\ -1, & -\pi\leq x<0\end{cases}$
+Fourier'n sarja.]{.esimerkki}
+
+#- {id="Ag6oJMSZR069"}
+**Ratkaisu**.
+
+Koska funktio on määritelty välillä $[-\pi, \, \pi]$, niin sen jakso on $2\pi$
+ja siten $L=\pi$.
+
+Lasketaan sitten Fourier'n sarjan kertoimet
+
+$$
+a_k = \frac{1}{\pi}\int_{-\pi}^{\pi}f(x)\cos(kx)\dx \quad \text{ja} \quad
+b_k = \frac{1}{\pi}\int_{-\pi}^{\pi}f(x)\sin(kx)\dx.
+$$
+
+Koska $f(x)$ on pariton funktio ja $\cos(kx)$ on parillinen funktio, niin niiden
+tulo $f(x)\cos(kx)$ on pariton funktio. Koska parittoman funktion integraali
+symmetrisen välin yli on nolla, niin
+$$
+a_k = 0 \quad \text{kaikilla} \ k.
+$$
+
+Puolestaan koska $\sin(kx)$ on pariton funktio, niin tulo $f(x)\sin(kx)$ on
+parillinen funktio. Tällöin saadaan
+$$
+\begin{aligned}
+b_k &= \frac{2}{\pi}\int_{0}^{\pi}f(x)\sin(kx)\dx\\
+&= \frac{2}{\pi k}\intsub{0}{\pi}-\cos(kx)\\
+&= \frac{2}{\pi k}(-\underbrace{\cos(k\pi)}_{= \ (-1)^k}+\cos(0))\\
+&= \frac{2}{\pi k}\left((-1)^{k+1}+1\right).
+\end{aligned}
+$$
+[Siten funktion $f(x)$ Fourier'n sarja on
+$$
+f(x)= \sum_{k=1}^{\infty}\frac{2}{\pi k}\left((-1)^{k+1}+1\right)\sin(kx).
+$$]{.huomautus}
+
+#- {id="GfRuW4l3jUxY" math_type="svg" math_preamble="\\usepackage{pgfplots}"}
+\begin{tikzpicture}
+\begin{axis}[axis lines=middle, samples=300,
+    restrict y to domain=-2:2,xtick={-pi,-(1/2)*pi,0,(1/2)*pi, pi},
+             xticklabels={$-\pi$,$-\frac{\pi}{2}$,,$\frac{\pi}{2}$,$\pi$},
+             xlabel=$x$,xlabel=$x$,ylabel=$y$,
+             legend pos = outer north east]
+\addplot [color=red, thick, domain=-pi:0]   {-1};
+\addplot [color=red, thick, domain=0:pi] {1};
+\addplot [color=blue, thick, domain=-pi:pi] 
+{(4/pi)*sin(deg(x))+(4/(3*pi))*sin(3*deg(x))+(4/(5*pi))*sin(5*deg(x))+(4/(7*pi))*sin(7*deg(x))};
+\legend{$f(x)$, ,Fourier $k=7$}
+\end{axis}
+\end{tikzpicture}
+
+#- {id="BtaHugl0Q4Gk" area_end="real_fourier_esim"}
+
+## Kompleksinen Fourier'n sarja {id="fnGRjtKQaTRC" .timoranssi #kompleksinenfourier}
+
+#- {id="HQXZZIRUkdcm"}
+Usein laskujen kannalta on helpompi käyttää kompleksista versiota Fourier'n sarjasta
+ja joskus tämä on myös käsiteltävän funktion kannalta kätevämpi versio.
+
+#- {id="BtxHzsRm7j6d"}
+[$2L$-jaksollisen funktion $f(x)$ **kompleksinen** Fourier'n sarja on
+$$
+f(x) = \sum_{k=-\infty}^{\infty}c_k e^{\tfrac{ik\pi x}{L}}
+$$
+missä
+$$
+c_k = \frac{1}{2L}\int\displaylimits_{-L}^{L}f(x)e^{-\tfrac{ik\pi x}{L}}\dx.
+$$
+]{.huomautus}
+
+#- {id="ZNv3lSTMlD0N" area="komp_real_ekv" collapse="true"}
+[**Huomautus**. Kompleksinen ja reaalinen Fourier'n sarja ovat ekvivalentit.]{.esimerkki}
+
+#- {id="bZwkPeJsA3Ty"}
+Lähdetään liikkeelle kompleksisesta Fourier'n sarjasta.
+$$
+\sum_{k=-\infty}^{\infty}c_ke^{\tfrac{ik\pi x}{L}}
+= \sum_{k=0}^{\infty}c_ke^{\tfrac{ik\pi x}{L}} + \sum_{k=-\infty}^{-1}c_ke^{\tfrac{ik\pi x}{L}}.
+$$
+Tehdään jälkimmäiseen sarjaan muuttujanvaihto $k=-k$, jolloin saadaan
+$$
+\begin{aligned}
+& \quad \sum_{k=0}^{\infty}c_ke^{\tfrac{ik\pi x}{L}} + \sum_{k=1}^{\infty}c_{(-k)}e^{-\tfrac{ik\pi x}{L}}\\
+&= c_0 + \sum_{k=1}^{\infty}\left[c_ke^{\tfrac{ik\pi x}{L}}+c_{(-k)}e^{-\tfrac{ik\pi x}{L}}\right].
+\end{aligned}
+$$
+
+Käyttämällä Eulerin kaavaa $e^{ix}=\cos(x)+i\sin(x)$ saadaan
+$$
+c_0 + \sum_{k=1}^{\infty}\left[\left(c_k+c_{(-k)}\right)\cos\left(\frac{k\pi x}{L}\right)
++i\left(c_k-c_{(-k)}\right)\sin\left(\frac{k\pi x}{L}\right)\right]. \qquad (*)
+$$
+Lasketaan seuraavaksi $c_k+c_{(-k)}$ ja $i\left(c_k-c_{(-k)}\right)$:
+$$
+\begin{aligned}
+c_k+c_{(-k)} &= \frac{1}{2L}\int_{-L}^{L}f(x)e^{-\tfrac{ik\pi x}{L}}\dx
++ \frac{1}{2L}\int_{-L}^{L}f(x)e^{\tfrac{ik\pi x}{L}}\dx\\
+&= \frac{1}{2L}\int_{-L}^{L}f(x)\left(e^{-\tfrac{ik\pi x}{L}}+e^{\tfrac{ik\pi x}{L}}\right)\dx
+\qquad\Big| \ \cos(x)=\frac{1}{2}\left(e^{ix}+e^{-ix}\right)\\
+&= \frac{1}{2L}\int_{-L}^{L}f(x)2\cos\left(\frac{k\pi x}{L}\right)\dx\\
+&= \frac{1}{L}\int_{-L}^{L}f(x)\cos\left(\frac{k\pi x}{L}\right)\dx = a_k.
+\end{aligned}
+$$
+Vastaavasti käyttämällä tietoa $\sin(x)=\frac{1}{2i}\left(e^{ix}-e^{-xi}\right)$
+saadaan
+$$
+\begin{aligned}
+i\left(c_k-c_{(-k)}\right)
+&=i\frac{1}{2L}\int_{-L}^{L}f(x)\left(e^{-\tfrac{ik\pi x}{L}}-e^{\tfrac{ik\pi x}{L}}\right)\dx\\
+&= \frac{i}{2L}\int_{-L}^{L}f(x)(-2i)\sin\left(\frac{k\pi x}{L}\right)\dx \qquad\Big| \ -i^2=1\\
+&= \frac{1}{L}\int_{-L}^{L}f(x)\sin\left(\frac{k\pi x}{L}\right)\dx = b_k.
+\end{aligned}
+$$
+Lisäksi
+$$
+\begin{aligned}
+c_0 &= \frac{1}{2L}\int_{-L}^{L}f(x)e^{-\tfrac{i\cdot 0\cdot\pi x}{L}}\dx\\
+&= \frac{1}{2L}\int_{-L}^{L}f(x)\dx
+= \frac{1}{2L}\int_{-L}^{L}f(x)\underbrace{\cos\left(\frac{0\cdot\pi x}{L}\right)}_{= \ 1}\dx\\
+&= \frac{a_0}{2}.
+\end{aligned}
+$$
+Sijoittamalla lasketut tulokset yhtälöön $(*)$ saadaan
+$$
+\sum_{k=-\infty}^{\infty}c_ke^{\tfrac{ik\pi x}{L}}
+= \frac{a_0}{2} + \sum_{k=1}^{\infty}\left[a_k\cos\left(\frac{k\pi x}{L}\right)
++b_k\sin\left(\frac{k\pi x}{L}\right)\right].
+$$
+Eli kompleksinen ja reaalinen Fourier'n sarja ovat ekvivalentit.
+
+#- {id="BPse5rgNwKsh" area_end="komp_real_ekv"}
+
+#- {id="YNXXZbbslslF" area="komp_fourier_esim" collapse="true"}
+[**Esimerkki**. Määritä funktion $f(x)=\begin{cases}x+\pi, & -\pi\leq x < 0\\
+-x, & 0\leq x\leq\pi.\end{cases}$ Fourier'n sarja.]{.esimerkki}
+
+#- {id="5F6EWkE73pjD"}
+**Ratkaisu**.
+
+Funktio $f(x)$ on määritelty välillä $[-\pi, \pi]$ eli sen jakso on $2\pi$ ja
+siten $L=\pi$.
+Lasketaan sarjan kertoimet $c_k$.
+$$
+\begin{aligned}
+c_k &= \frac{1}{2L}\int_{-L}^{L}f(x)e^{-\tfrac{ik\pi x}{L}}\dx\\
+&= \frac{1}{2\pi}\int_{-\pi}^{\pi}f(x)e^{-ikx}\dx\\
+&= \frac{1}{2\pi}\left[\int_{-\pi}^{0}(x+\pi)e^{-ikx}\dx + \int_{0}^{\pi}-xe^{-ikx}\dx\right]\\
+&= \frac{1}{2\pi}\left[\int_{-\pi}^{0}\pi e^{-ikx}\dx + \int_{-\pi}^{0}xe^{-ikx}\dx
+- \int_{0}^{\pi}xe^{-ikx}\dx\right].
+\end{aligned}
+$$
+
+Lasketaan ensin integraali $\int xe^{-ikx}\dx$. Valitaan
+$$
+\begin{aligned}
+u&=x \qquad v=-\frac{1}{ik}e^{-ikx} \\
+u'&=1 \qquad v'=e^{-ikx}.
+\end{aligned}
+$$
+Tällöin osittaisintegroimalla $(\int uv' = uv - \int u'v)$ saadaan
+$$
+\begin{aligned}
+\int xe^{-ikx}\dx &= -\frac{x}{ik}e^{-ikx} - \int -\frac{1}{ik}e^{-ikx}\\
+&= -\frac{x}{ik}e^{-ikx} - \frac{1}{(ik)^2}e^{-ikx}&&\Big| \ i^2=-1\\
+&= \left(-\frac{x}{ik} + \frac{1}{k^2}\right)e^{-ikx}.
+\end{aligned}
+$$
+Siten
+$$
+\begin{aligned}
+c_k & = \frac{1}{2\pi}\left[\intsub{-\pi}{0}\left(-\frac{\pi}{ik}
+-\frac{x}{ik}+ \frac{1}{k^2}\right)e^{-ikx}
+- \intsub{0}{\pi}\left(-\frac{x}{ik}+ \frac{1}{k^2}\right)e^{-ikx}\right]\\
+&= \frac{1}{2\pi}\left[\left(-\frac{\pi}{ik}+ \frac{1}{k^2}\right) - \frac{1}{k^2}e^{ik\pi}
+-\left(-\frac{\pi}{ik}+ \frac{1}{k^2}\right)e^{-ik\pi}+ \frac{1}{k^2}\right] \\
+&=\frac{1}{2\pi}\left[ -\frac{\pi}{ik}+ \frac{2}{k^2} - \frac{1}{k^2}e^{ik\pi}
++\left(\frac{\pi}{ik}- \frac{1}{k^2}\right)e^{-ik\pi}\right].
+\end{aligned}
+$$
+Eulerin kaavalla saadaan
+$$
+\begin{aligned}
+e^{\pm ik\pi} &= \cos(\pm k\pi) + i\underbrace{\sin(\pm k\pi)}_{= \ 0} \\
+&= \cos(k\pi) = (-1)^k.
+\end{aligned}
+$$
+Sijoitetaan tämä yllä olevaan yhtälöön.
+$$
+\begin{aligned}
+c_k &=\frac{1}{2\pi}\left[ -\frac{\pi}{ik}+ \frac{2}{k^2} - \frac{1}{k^2}(-1)^k
++\left(\frac{\pi}{ik}- \frac{1}{k^2}\right)(-1)^k\right]&&\quad\Bigg|\quad \frac{1}{i}=-i \\
+&= \frac{1}{2\pi}\left[\frac{i\pi}{k}+ \frac{2}{k^2}-\left(\frac{i\pi}{k}+\frac{2}{k^2}\right)(-1)^k\right] \\
+&= \frac{1}{2\pi}\left[\left(\frac{2}{k^2}+\frac{i\pi}{k}\right)\left(1+(-1)^k\right)\right]\\
+&=\left(\frac{1}{\pi k^2}+\frac{i}{2k}\right)\left(1+(-1)^k\right).
+\end{aligned}
+$$
+[Siten funktion $f(x)$ Fourier'n sarja on
+$$
+f(x)=\sum_{\mathclap{\substack{k=-\infty\\k\neq 0}}}^{\infty}
+\left(\frac{1}{\pi k^2}+\frac{i}{2k}\right)\left(1+(-1)^k\right)e^{ikx}.
+$$]{.huomautus}
+
+#- {id="RIuSlYfBuSiB" math_type="svg" math_preamble="\\usepackage{pgfplots}"}
+\begin{tikzpicture}
+\begin{axis}[axis lines=middle, samples=300,
+    restrict y to domain=-4:4,xtick={-pi,-(1/2)*pi,0,(1/2)*pi, pi},
+             xticklabels={$-\pi$,$-\frac{\pi}{2}$,,$\frac{\pi}{2}$,$\pi$},
+             xlabel=$x$,xlabel=$x$,ylabel=$y$,
+             legend pos = outer north east]
+\addplot [color=red, thick, domain=-pi:0]   {x+pi};
+\addplot [color=red, thick, domain=0:pi] {-x};
+\addplot [color=blue, thick, domain=-pi:pi] 
+{(4/pi)*cos(deg(x))-2*sin(deg(x))+(4/(9*pi))*cos(3*deg(x))-(2/3)*sin(3*deg(x))
++(4/(25*pi))*cos(5*deg(x))-(2/5)*sin(5*deg(x))};
+\legend{$f(x)$, ,Fourier $k=5$}
+\end{axis}
+\end{tikzpicture}
+
+#- {id="hToV6gGfxKOp" area_end="komp_fourier_esim"}
+
+## Fourier'n sarjan suppeneminen {id="rzjW3ow7c1Td" .timoranssi #fouriersuppeneminen}
+
+#- {id="baU00RXKwyoP"}
+Fourier'n sarjan suppenemisen selvittäminen eroaa Taylorin sarjan ja potenssisarjasta.
+Taylorin ja potenssisarjan tapauksessa tutkitaan muodostetun sarjan kertoimien
+käyttäytymistä kun sarjan termien määrä kasvaa rajatta. Fourier'n sarjan tapauksessa
+puolestaan tutkitaan toteuttaa kyseinen funktio tietyt ehdot suppenemiselle.
+Näitä ehtoja sanotaa **Dirichlet'n ehdoiksi**.
+
+#### Dirichlet'n ehdot {id="JfEhyLgXYJ0L" .timsininen}
+
+#- {id="UQllNScJQAYA"}
+[Funktio $f(x)$ toteuttaa Dirichlet'n ehdot, jos \
+\
+1. sillä on äärellinen määrä hyppäysepäjatkuvuuksia $x_k$ eli
+$$
+\lim_{x\to x_k^-}f(x) \neq \lim_{x\to x_k^+}f(x).
+$$
+\
+2. sillä on äärellinen määrä ääriarvoja. \
+\
+3. se on integroituva eli
+$$
+\int_{-L}^{L}\left|f(x)\right|\dx < \infty.
+$$
+]{.huomautus}
+
+#- {id="P71xejit6Ata"}
+Jos funktio  $f(x)$, joka on määritelty välillä $[-L,\,L]$ totetuttaa Dirichlet'n
+ehdot, niin sen Fourier'n sarja $F(x)$ suppenee. Sarja suppenee $f(x)$:ään kaikkialla,
+missä funktio $f(x)$ on jatkuva. Epäjatkuvuuskohdissa $x_k$ sarja suppenee toispuolisten
+raja-arvojen keskiarvoon
+$$
+F(x_k) = \frac{\displaystyle \lim_{x\to x_k^-}f(x) + \lim_{x\to x_k^+}f(x)}{2}.
+$$
+Päätepisteissä $-L$ j ja $L$ sarja suppenee päätepisteiden keskiarvoon
+$$
+F(-L)=F(L)=\frac{f(-L)+f(L)}{2}.
+$$
+
+#- {id="j7mrEcVldgGr"}
+Funktio $f(x)=\sin(\frac{1}{x})$ ei toteuta Dirichlet'n ehtoja välillä $[-L,\,L]$,
+koska sillä on ääretön määrä ääriarvoja. Kun $x$ lähestyy nolla niin $f(x)$
+oskilloi 1 ja -1 välillä äärettömän monta kertaa.
+\
+\
+Funktio $g(x)=\frac{1}{x}$ ei myöskään toteuta Dirichlet'n ehtoja, sillä
+$$
+\begin{aligned}
+\int_{-L}^{L}|g(x)|\dx &= \int_{-L}^{L}\left|\frac{1}{x}\right|\dx
+= 2\int_{0}^{L}\frac{1}{x}\dx\\
+&= 2\intsub{0}{L}\ln(x) = 2\left(\ln(L)-\underbrace{\ln(0)}_{= -\infty}\right) = \infty.
+\end{aligned}
+$$
+\
+Puolestaa funktio $h(x)=\begin{cases}1, & 0\leq x\leq \pi\\ -1, & -\pi\leq x<0\end{cases}$
+totettaa Dirichlet'n ehdot, koska sillä on vain yksi epäjatkuvuuskohta $x=0$, sillä
+on vain kaksi ääriarvoa -1 ja 1 ja
+$$
+\int_{-L}^{L}|f(x)|\dx = \int_{0}^{L}2 \dx = 2L < \infty.
+$$
+
+## Fourier'n approksimointi graafisesti (Python) {id="laWd7DoWN6gk" .timoranssi #fourierpython}
+
+#- {id="tuDqjTFabv8O" area="fourier_python" collapse="true"}
+[Python-ohjelma Fourier'n sarjalle. ]{.esimerkki}
+
+``` {id="wjMF14UPbK7p" plugin="csPlugin" #fourierpy}
+type: py
+header: Fourier'n sarja
+nosave: true
+imgsource: image.png
+fullprogram: |!!
+# Ladataan tarvittavat kirjastot, kuten pyplot kuvaajien piirtämiseen.
+import numpy as np
+import math as m
+import matplotlib.pyplot as plt
+from scipy.integrate import quad
+
+// BYCODEBEGIN
+# kirjoita haluamasi funktio def f(x): alle returnin perään.
+# lisäämällä eteen "m." tai "np." voit käyttää useimpia matemaattisia
+# funktioita esimerkiksi m.sin(x) tai np.exp(x)
+def f(x):
+    if x < -np.pi/2:
+        return x + 4*np.pi/3
+    elif x > -np.pi/2 and x < 0:
+        return np.sin(20*x)-2
+    elif x > 0 and x < np.pi/2:
+        return np.exp(-x)
+    else:
+        return -2*x + 2*np.pi
+
+# Esimerkkinä toinen funktio.
+# Poista kommentointi eli #-merkit ja kommentoi tai poista ylempi funktio,
+# niin voit kokeilla tätä funktiota.
+# Tässä muista vaihtaa keskipisteeksi kp=np.pi
+
+#def f(x):
+#    if x > 0 and x < np.pi/2:
+#       return x
+#    elif x > np.pi/2 and x < np.pi:
+#        return -x+np.pi
+#    else:
+#        return 0.5*x-np.pi/2;
+
+# Approksimaation kertaluku, kasvata tätä niin approksimaatio paranee
+kertaluku = 2
+
+#Jakson pituus
+# Esim. jos jakso on 2pi, niin kirjoita L = 2*np.pi
+L = 2*np.pi
+
+# Välin keskipiste
+# Esim, jos väli on [-pi,pi], niin kp = 0
+# Jos väli on [0,2pi], niin kp = np.pi
+kp = 0
+
+// BYCODEEND
+
+# Integrand
+
+def integrand1(x, f, k, L):
+    return f(x)*np.cos((k*np.pi*x)/L)
+
+def integrand2(x , f, k, L):
+    return f(x)*np.sin((k*np.pi*x)/L)
+
+
+
+def fourier(x, n, L): # L is interval length
+
+    sum_cos = 0
+    sum_sin = 0
+    k = 0
+    a_0 = (1/L)*(quad(integrand1, -L, L, args=(f,k,L))[0])*np.cos((k*np.pi*x)/L)
+    while k < n:
+        k += 1
+        sum_cos += (1/L)*(quad(integrand1, -L, L, args=(f,k,L))[0])*np.cos((k*np.pi*x)/L)
+        sum_sin += (1/L)*(quad(integrand2, -L, L, args=(f,k,L))[0])*np.sin((k*np.pi*x)/L)
+    return a_0/2 + sum_cos + sum_sin
+
+
+x = np.arange(-L/2+kp, L/2+kp, 0.01)
+
+y = [f(i) for i in x]
+
+
+# plot the function
+plt.plot(x, y, label="f(x)", color='k')
+
+# plot the fourier series approximations
+
+plt.plot(x, fourier(x,kertaluku,L/2+kp), label='n='+str(kertaluku))
+plt.plot(x, fourier(x,kertaluku+2,L/2+kp), label='n='+str(kertaluku+2))
+#plt.plot(x, fourier(x,kertaluku+8,L/2+kp), label='n='+str(kertaluku+8))
+
+
+
+plt.xlabel('x')
+plt.ylabel('f(x)')
+plt.legend(loc='upper left')
+# plt.show()
+
+# Tämä tarvitaan kuvan näyttämiseen timissä.
+plt.savefig('image.png')
+!!
+```
+
+#- {id="fAwGQAlblj9Q" area_end="fourier_python"}

@@ -1,0 +1,837 @@
+``` {id="33Xl15cr3gD4" plugin="timTable"}
+# forcedEditMode: true
+table:
+    countRow: 6
+    countCol: 2
+    textAlign: left 
+    border: 3px solid
+    rows:
+      - row:
+        - cell: '[Sivun aiheet]{.maaritelma .isolla}'
+        - cell: '[Katso myös]{.timsininen .isolla}'
+        backgroundColor: lightgray
+        fontWeight: bold
+        minWidth: 15em
+      - row:
+        - cell: '**Taylorin sarja** $\phantom{1234}$'
+        - cell: '$\phantom{a}$'
+        border: 2px solid white
+        borderTop: 3px solid 
+      - row:
+        - cell: '○ [Johdantoa Taylorin sarjaan](#johdanto)'
+        - cell: '○ [Sarjat](%%sarjat%%/sarjat_osa1)'
+        border: 2px solid white
+      - row:
+        - cell: '○ [Yleisimpiä sarjakehitelmiä](#taylortaulukko)'
+        - cell: '- [Aritmeettinen-](%%sarjat%%/sarjat_osa1#aritmeettinen), [geometrinen-](%%sarjat%%/sarjat_osa1#geometrinen), [potenssisarja](%%sarjat%%/sarjat_osa1#potenssisarja)'
+        border: 2px solid white
+      - row:
+        - cell: '○ [Taylorin polynomi ja sarjakehitelmä](#taylor)'
+        - cell: '○ [Muita sarjoja](%%sarjat%%/erikoissarjat)'
+        border: 2px solid white
+      - row:
+        - cell: '○ [Esimerkkejä](#tekniikoita)'
+        - cell: '- [Binomisarja](%%sarjat%%\erikoissarjat#binomisarja), [Legendren polynomi](%%sarjat%%\erikoissarjat#legendre)'
+        border: 2px solid white        
+      - row:
+        - cell: '○ [Sovelluksia](#taylorsovelluksia)'
+        - cell: "○ [Fourier'n sarja](%%sarjat%%/fourierin_sarja)"
+        border: 2px solid white        
+      - row:
+        - cell: '○ [Kahden muuttujan Taylorin sarja](#taylor2d)'
+        - cell: '$\phantom{tämä}$'
+```
+
+# %%työnalla%% Taylorin sarja %%työnalla%% {id="m4b7FXftqJ2U"}
+
+## Johdantoa Taylorin sarjaan {id="sDl0XzQUl4oe" .maaritelma #johdanto}
+
+#- {id="M0zm5Wxk3zYT" area="miksi_taylor" collapse="true"}
+[Miksi Taylorin sarjaa käytetään?]{.esimerkki}
+
+#- {id="LPgw34zSPqD9"}
+Toisinaan vastaan tulee funktioita, joita on liian vaikea integroida, derivoida tai vaikkapa ottaa niistä raja-arvoa jossain tietyssä pisteessä.
+Tällaisissa tilanteissa joudutaan käyttämään approksimaatiota, joka on riittävän tarkka kysytyllä välillä kuvaamaan alkuperäistä funktiota.
+[Brook Taylor](https://en.wikipedia.org/wiki/Brook_Taylor) keksi vuonna 1715 tavan, miten muodostaa polynomifunktio, joka approksimoi alkuperäistä funktiota annetun pisteen ympäristössä.
+
+Tällä sivulla on runsaasti esimerkkejä Taylorin sarjan hyötykäytöstä. 
+Tutustu rauhassa siihen, mikä itseäsi kiinnostaa.
+
+#- {id="YSw80IaYoXC5"}
+Olkoon meillä tehtävänä määrittää funktion 
+$$
+f(x) = \frac{\sin (x)-x}{x^3}
+$$
+[raja-arvo](%%raja_arvo%%) pisteessä $x=0$. Sijoittamalla $x=0$ annettuun funktioon antaisi muotoa "$\frac{0}{0}$" olevan vastauksen. 
+On siis keksittävä jokin muu keino avuksi. Sinifunktion Taylorin sarja on
+$$
+\sin (x) = x-\frac{1}{6}x^3+\frac{1}{120}x^5+O(x^7),
+$$
+missä $O(x^7)$ kuvaa virhetermiä. Nyt sijoittamalla sinifunktion polynomiesitys alkuperäiseen funktioon, voidaan raja-arvo laskea
+
+$$
+\begin{aligned}
+&\lim_{x \to 0}\frac{\sin (x)-x}{x^3}\\
+= &\lim_{x\to 0} \frac{x-\frac{1}{6}x^3+\frac{1}{120}x^5+O(x^7)-x}{x^3} \\
+= &\lim_{x\to 0} -\frac{1}{6}+\frac{1}{120}x^2+O(x^4)\\
+= & -\frac{1}{6}.
+\end{aligned}
+$$
+
+Voitaisiin ajatella, että miksi ei vain laitettaisi funktiota johonkin laskuohjelmaan ja katsottaisi sieltä vastaus?
+Alla olevassa kuvassa on tehty juuri näin. Funktio on piirretty ohjelmallisesti ja tulos on väärin, sillä ohjelma ei osaa laskea mitä tapahtuu nollan ympäristössä.
+Huonosti koodattu piirto-ohjelma yrittää approksimoida funktiota jollain virheellisellä keinolla ja sen mukaan funktio käyttäytyy hieman oudosti nollan lähellä ja vähenee rajatta nollan ympäristössä.
+
+#- {id="YT6SrdAsc1Lv" math_type="svg" math_preamble="\\usepackage{pgfplots}"}
+\begin{tikzpicture}
+\begin{axis}[
+    axis lines=middle,
+    title= Kaikki piirto-ohjelmat eivät osaa ratkaista vaikeita funktioita., 
+    %domain=-1:1, 
+    smooth,
+    samples=100,
+    %grid=major,
+    restrict y to domain=-0.5:0.5,
+    xlabel=$x$,xlabel=$x$,ylabel=$y$,
+    legend pos = outer north east]
+\plot [color=blue, thick, domain = -5:5]    {(sin(deg(x))-x)/x^3};
+%\plot [color=blue, thick, domain = 0.1:0.5]    {(sin(deg(x))-x)/x^3};
+%\addplot [color=red, thick]    {(-1/6*x^3+1/120*x^5)/x^3};
+\legend{$\frac{\sin(x)-x}{x^3}$}
+\end{axis}
+\end{tikzpicture}
+
+#- {id="ddTx23LHcZ5d"}
+Sen sijaan tämä alla oleva kuva piirtyy oikein, kun ohjelmistossa on käytetty oikeita approksimaatiomenetelmiä. 
+Taylorin polynomi helpottaa tuloksen järkevyyden arviointia. 
+Muista olla aina kriittinen ja pohtia onko vastaus järkevä!
+
+``` {id="acesYZqJlGbo" plugin="csPlugin" #taylor_geo1}
+type: geogebra
+borders: false
+norun: true
+width: 650
+height: 500
+material_id: "vwzpkrbj"
+```
+
+#- {id="4602KnPsw4h9" area_end="miksi_taylor"}
+
+## Yleisimpiä Taylorin sarjakehitelmiä {id="t4XM7BOvqpBX" .timoranssi #taylortaulukko}
+
+``` {id="UEyY37tMZNzG" plugin="timTable"}
+table:
+  countCol: 2
+  countRow: 7
+  columns:
+  width: 1px
+  rows:
+  - backgroundColor: lightgray
+    fontWeight: bold
+    row:
+    - cell: $$\textbf{Sarjakehitelmä}$$
+    - cell:  $$\textbf{Milloin sarjaesitys on voimassa}$$
+  - row:
+    - cell: $$\begin{aligned}\frac{1}{1-x} &= \sum_{n=0}^{\infty}x^n\\&=1+x+x^2+x^3+x^4+O(x^5)\end{aligned}$$
+    - cell: $$\text{(Geometrinen sarja)}$$$$ \text{kun}  \quad -1<x<1$$
+  - row:
+    - cell: $$\begin{aligned}e^x &= \sum_{n=0}^{\infty}\frac{x^n}{n!}\\&=1+x+\frac{1}{2!}x^2+\frac{1}{3!}x^3+\frac{1}{4!}x^4+O(x^5)\end{aligned}$$
+    - cell: $$\text{kaikilla reaaliluvuilla}$$
+ 
+  - row:
+    - cell: $$\begin{aligned}\sin(x) &= \sum_{n=0}^{\infty}\frac{(-1)^n}{(2n+1)!)}x^{2n+1}\\&=x-\frac{1}{3!}x^3+\frac{1}{5!}x^5+O(x^7)\end{aligned}$$
+    - cell: $$\text{kaikilla reaaliluvuilla}$$
+  - row:
+    - cell: $$\begin{aligned}\cos(x) &= \sum_{n=0}^{\infty}\frac{(-1)^n}{(2n)!)}x^{2n}\\&=1-\frac{1}{2!}x^2+\frac{1}{4!}x^4+O(x^6)\end{aligned}$$
+    - cell: $$\text{kaikilla reaaliluvuilla}$$
+  - row:
+    - cell: $$\begin{aligned}\tan(x) &= x+\frac{1}{3}x^3+\frac{2}{15}x^5+O(x^7)\end{aligned}$$
+    - cell: $$\text{kun}  \quad -\frac{\pi}{2}<x<\frac{\pi}{2}$$
+  - row:
+    - cell: $$\begin{aligned}\ln(1+x) &= \sum_{n=0}^{\infty}\frac{(-1)^{n+1}}{n}x^{n}\\&=x-\frac{1}{2}x^2+\frac{1}{3}x^3-\frac{1}{4}x^4+O(x^5)\end{aligned}$$
+    - cell: $$\text{kun}  \quad -1<x\leq 1$$
+  - row:
+    - cell: $$\begin{aligned}\sqrt{1+x} &= \sum_{n=0}^{\infty}{\frac{1}{2}\choose n}x^{n}\\&=1+\frac{1}{2}x-\frac{1}{8}x^2+\frac{1}{16}x^3-\frac{5}{128}x^4+O(x^5)\end{aligned}$$
+    - cell: $$\text{(Binomisarja)}$$$$\text{kun}  \quad -1\leq x\leq 1$$
+
+
+```
+
+## Taylorin polynomi ja sarjakehitelmä {id="N1OTudfb7P1Z" .maaritelma #taylor}
+
+#- {id="Uxw6YXg1Tmjn"}
+Taylorin polynomilla pystytään approksimoimaan funktiota polynomilla.
+
+[Funktion $f(x)$ Taylorin polynomi kertalukua $n$ pisteessä $x=a$ on
+$$ f(a) + f'(a)(x-a) + \frac{f''(a)}{2!}(x-a)^2 + ... +\frac{f^{(n)}(a)}{n!}(x-a)^n.$$
+Funktio $f(x)$ voidaan tällöin kirjoittaa astetta $n$ olevan polynomin ja virhetermin avulla muotoon
+$$ f(x) = f(a) + f'(a)(x-a) + ... +\frac{f^{(n)}(a)}{n!}(x-a)^n + O(x^{n+1})$$]{.huomautus}
+
+#- {id="r7UDLYY3cWsT" area="virhetermi" collapse="true"}
+[**Virhetermi**.]{.esimerkki}
+
+#- {id="Zpi9AEqPwdHO"}
+[Virhetermi](https://en.wikipedia.org/wiki/Big_O_notation#Infinitesimal_asymptotics) $O(x^{n+1})$ voidaan monesti olettaa nollaksi, kun $x$ on lähellä $a$:ta:
+$(x-a)^{n+1} \approx 0.$
+Virhetermiin voi sisällyttää aina kaikki korkeampaa astetta olevat termit. Esimerkiksi $\cos (x)$ voidaan kirjoittaa
+
+\begin{align*}
+\cos (x) &= 1- \frac{x^2}{2!}+\frac{x^4}{4!}-\frac{x^6}{6!}+O(x^7) \\
+&=1- \frac{x^2}{2!}+\frac{x^4}{4!}+ O(x^5)\\
+&=1- \frac{x^2}{2!}+O(x^3).
+\end{align*}
+
+#- {id="IKwQbKmZFoc5" area_end="virhetermi"}
+
+#- {id="Odbs1kdvY4re"}
+Monissa fysiikan ongelmissa, joissa käsitellään pieniä muutoksia $\Delta x = x-a$ jo ensimmäisen kertaluvun Taylorin polynomi on hyödyllinen. 
+Tällöin termi, jossa esiintyy tekijä $(\Delta x)^2$ on lopputuloksen kannalta merkityksetön.
+
+#- {id="r0gP0lnbrqGT"}
+[Funktion $f(x)$ Taylorin sarjaksi kutsutaan funktion [potenssisarjaesitystä](%%sarjat%%/sarjat_osa1#potenssisarjaesitys)
+$$ f(x) = \sum_{n=0}^{\infty}\frac{f^{(n)}(a)}{n!}(x-a)^n.$$]{.huomautus}
+
+#- {id="7Er84Y4HGFiC"}
+**HUOM**. Taylorin sarjalle, joka on kehitetty origossa käytetään myös nimitystä
+**MacLaurinin sarja**.
+
+#- {id="vNBuNNUm9MTa" area="esim_maclaurin" collapse="true"}
+[**Esimerkki**. Toisen kertaluvun MacLaurinin sarja funktiolle $\ln(x+1)$.]{.esimerkki}
+
+#- {id="RsYA9eLSFetW"}
+Lasketaan ensiksi funktion $f(x)=\ln (x+1)$ derivaattojen arvot pisteessä $a=0$ toiseen kertalukuun asti:
+\begin{align*}
+f(0) &= \ln (0+1) = \ln(1)=\ln e^0 = 0, \\
+f'(x) &= \frac{1}{x+1} \Longrightarrow f'(0)=1 \quad \text{ja} \\
+f''(x) &= -\frac{1}{(x+1)^2} \Longrightarrow f''(0) = -1.
+\end{align*}
+
+Nyt voidaan muodostaa toisen kertaluvun MacLaurinin sarja funktiolle $f(x)=\ln (x+1)$ pisteen $a=0$ ympäristössä
+
+\begin{align*}
+f(x) &\approx f(0)+f'(0)(x-0)+\frac{f''(0)}{2}(x-0)^2\\
+&=0 + 1\cdot x -\frac{1}{2}\cdot x^2 \\
+&=x-\frac{1}{2}x^2.
+\end{align*}
+
+#- {id="mv7If98qIeDE" math_type="svg" math_preamble="\\usepackage{pgfplots}"}
+\begin{tikzpicture}
+\begin{axis}[
+    axis lines=middle,
+    domain=-2:3, 
+    samples=100,
+    %grid=major,
+    restrict y to domain=-3:3,
+    xlabel=$x$,xlabel=$x$,ylabel=$y$,
+    legend pos = outer north east]
+\addplot [color=red, thick]    {ln(x+1)};
+\addplot [color=blue, thick]    {x-0.5*x^2};
+\legend{$\ln (x+1)$, $x-\frac{1}{2}x^2$}
+\end{axis}
+\end{tikzpicture}
+
+#- {id="iDqwLn5mYR8Z" area_end="esim_maclaurin"}
+
+#- {id="MvueEB7ormeA" area="esim_taylor" collapse="true"}
+[**Esimerkki**. Taylorin polynomin avulla funktion $f(x) = \cos (x)$ approksimointia.]{.esimerkki}
+
+#- {id="3koa3760SNl2"}
+Muodostetaan funktion $f(x)=\cos (x)$ Taylorin sarja pisteen $a = 0$ ympäristössä neljänteen kertalukuun asti.
+Lasketaan kosinin eri kertalukujen derivaattoja arvolla $a= 0$.
+
+\begin{align*}
+&\text{0. kertaluku: } \cos (x) &f(0)=\cos (0) =1 \\
+&\text{1. kertaluku: } D (\cos (x)) \dx = -\sin (x), &f'(0)=-\sin (0) = 0 \\
+&\text{2. kertaluku: } D (-\sin (x))\dx = -\cos (x), &f''(0)=-\cos (0) = -1  \\
+&\text{3. kertaluku: } D (-\cos (x))\dx = \sin (x),  &f^3(0)=\sin (0) = 0 \\
+&\text{4. kertaluku: } D (\sin (x))\dx = \cos (x),  &f^4(0)=\cos (0) = 1 
+\end{align*}
+
+Taylorin mukaan
+
+\begin{align*}
+\cos (x) &= f(0)+f'(0)(x-0)+\frac{f''(0)}{2!}(x-0)^2+\frac{f^3(0)}{3!}(x-0)^3+\frac{f^4(0)}{4!}(x-0)^4+O(x^5)\\
+&= 1 + 0x-\frac{1}{2}x^2+0x^3+\frac{1}{24}x^4+O(x^5) \\
+&\approx 1-\frac{1}{2}x^2+\frac{1}{24}x^4,
+\end{align*}
+missä termi $O(x^5)\approx 0$.
+
+#- {id="ndYIUPvYNQTC"}
+Kun molemmat funktiot piirretään samaan koordinaatistoon, huomataan että saatu polynomifunktio approksimoi hyvin kosinifunktiota nollan ympäristössä.
+
+#- {id="riyjnzmcH7XP" math_type="svg" math_preamble="\\usepackage{pgfplots}"}
+\begin{tikzpicture}
+\begin{axis}[domain=-4:4, samples=100,
+    %grid=major,
+    restrict y to domain=-4:4, legend pos = outer north east,
+    axis lines = middle,
+    xlabel = $x$,
+    ylabel=$y$]
+\addplot [color=red, thick]    {cos(deg(x)};
+\addplot [color=blue, thick]   {1-1/2*x^2+1/24*x^4};
+\legend{$\cos (x)$, $1-\frac{1}{2}x^2+\frac{1}{24}x^4$}
+\end{axis}
+\end{tikzpicture}
+
+#- {id="Nuu7xGiuj56a" area_end="esim_taylor"}
+
+#- {id="JZeCsRAVlmsJ" area="Taylor_geogebra" collapse="true"}
+[**Esimerkki**. Taylorin polynomin isommat kertaluvut funktioille $\cos (x)$ ja $\sin (x)$ (GeoGebra).]{.esimerkki}
+
+#- {id="Yc3Kvo5sGM3O"}
+Voit kokeilla Taylorin polynomin "hyvyyttä" eri kertaluvuilla ja pisteillä liukusäätimien avulla.
+
+``` {id="XFNmxwwgK0hB" plugin="csPlugin" #geo2}
+type: geogebra
+borders: false
+norun: true
+width: 650
+height: 500
+material_id: "jen3dkke"
+```
+
+#- {id="YvqLMob8SIEO" area_end="Taylor_geogebra"}
+
+### Taylorin polynomi annetulle funktiolle (GeoGebra) {id="j0Fze7w8iFL1" .timsininen}
+
+{!!! collapse = "true" poistettu !!!}
+
+#- {id="fOyJYuDSd7U0" area="Taylor_oma_polym" collapse="true"}
+[**Esimerkki**. Taylorin polynomi annetulle funktiolle (GeoGebra).]{.esimerkki}
+
+#- {id="PKjn7L5HTl5w"}
+Voit syöttää oman funktiosi kohtaan "Oma funktio" ja säätää liukusäätimillä Taylorin polynomin kertaluvun ja tarkasteltavan pisteen paikan.
+
+``` {id="lqKzAJPgYzJ7" plugin="csPlugin" #geo3}
+type: geogebra
+borders: false
+norun: true
+width: 650
+height: 500
+material_id: "uvprvdgv"
+```
+
+#- {id="sFJ1zp3lJM9u" area_end="Taylor_oma_polym"}
+
+## Esimerkkejä Taylorin sarjojen laskemisesta {id="kIMAk4pquFIx" .maaritelma #tekniikoita}
+
+### Sarjan selvittäminen määritelmän avulla {id="HAg8AFCfRfNz" .timsininen}
+
+#- {id="48poMuWEXo7u" area="taylor_maar_esim" collapse="true"}
+[**Esimerkki**. Selvitä funktion $e^{-2x}$ Taylorin sarja pisteessä $x=1$.]{.esimerkki}
+
+#- {id="9fQkaiC3yHzF"}
+Taylorin sarjan määritelmän mukaan
+$$
+\begin{aligned}
+f(x) &= \sum_{n=0}^{\infty}\frac{f^{(n)}(a)}{n!}(x-a)^n\\
+&= f(a)+f'(a)(x-a)+\frac{1}{2!}f''(a)(x-a)^2+\frac{1}{3!}f'''(a)(x-a)^3 + O((x-a)^4). 
+\end{aligned}
+$$
+Nyt $f(x)=e^{-2x}$ ja $a=1$. Lasketaan derivaatat ja niiden arvo pisteessä $x=1$.
+
+$$
+\begin{aligned}
+&f(x)=e^{-2x},\ &&f(1)=e^{-2} \\
+&f'(x)=-2e^{-2x}, \ &&f'(1)=-2e^{-2}\\
+&f''(x)=4e^{-2x}, \ &&f''(1)=4e^{-2}\\
+&f'''(x)=-8e^{-2x}, \ &&f'''(1)=-8e^{-2}.
+\end{aligned}
+$$
+
+Sijoitetaan nämä määritelmästä saatuun yhtälöön, jolloin saadaan
+
+$$
+\begin{aligned}
+e^{-2x}&=e^{-2}-2e^{-2}(x-1)+\frac{4e^{-2}}{2!}(x-1)^2-\frac{8e^{-2}}{3!}(x-1)^3+O((x-1)^4)\\
+&=e^{-2}-2e^{-2}(x-1)+2e^{-2}(x-1)^2-\frac{4e^{-2}}{3}(x-1)^3+O((x-1)^4).
+\end{aligned}
+$$
+Eli funktion $e^{-2x}$ Taylorin sarja pisteen $x=1$ ympäristössä on
+[
+$$
+e^{-2x}=e^{-2}-2e^{-2}(x-1)+2e^{-2}(x-1)^2-\frac{4e^{-2}}{3}(x-1)^3+O((x-1)^4).
+$$
+]{.huomautus}
+
+#- {id="9nvwnPo1XqER" math_type="svg" math_preamble="\\usepackage{pgfplots}"}
+\begin{tikzpicture}
+\begin{axis}[axis lines=middle,,domain=-0.3:2, samples=100,grid=major,
+    restrict y to domain=-2:1.8,
+    xlabel=$x$,
+    ylabel=$y$,
+    legend pos = north east]
+\addplot [color=red, thick]    {e^(-2*x)};
+\addplot [color=blue, thick]    {e^(-2)*(1-2*(x-1)+2*(x-1)^2-4/3*(x-1)^3)};
+\legend{$e^{-2x}$, Taylor}
+\end{axis}
+\end{tikzpicture}
+
+#- {id="SbDPpGAr3out" area_end="taylor_maar_esim"}
+
+### Tunnetun sarjan kertominen polynomilla {id="zzNZ9KWkX6Bk" .timsininen}
+
+#- {id="ZlQaiZMi15qv" area="polysarjatuloesim" collapse="true"}
+[**Esimerkki**. Selvitä funktion $(1+x)\sin(x)$ Taylorin sarja origossa.]{.esimerkki}
+
+#- {id="sfR0voLvgcUe"}
+**Ratkaisu.**
+
+Käyttämällä funktion $\sin(x)$ Taylorin sarjaa
+$$
+\sin(x) = \sum_{n=0}^{\infty}\frac{(-1)^n}{(2n+1)!}x^{2n+1}
+$$
+saadaan
+$$
+(1+x)\sin(x) = (1+x)\left(\sum_{n=0}^{\infty}\frac{(-1)^n}{(2n+1)!}x^{2n+1}\right). \\
+$$
+Otetaan sarjasta korkeintaa kolmatta kertalukua olevat termit mukaan. Korkeamman
+kertaluvut termit sisältyvät virhetermiin $O(x^5)$. Tällöin
+$$
+\begin{aligned}
+(1+x)\sin(x) &= (1+x)\left(x - \frac{1}{3!}x^3 + O(x^5)\right) \\
+&= x + x^2 - \frac{1}{3!}x^3 - \frac{1}{3!}x^4 +\red{O(x^5)}(\red 1+\blue x).
+\end{aligned}
+$$
+Koska kaikki viidettä tai korkeampaa kertalukua olevat termit sisältyvät virhetermiin
+$\red{O(x^5)}$, niin myös $\blue x\cdot \red{O(x^5)} = O(x^6)$ sisältyy siihen, jolloin
+[$$
+(1+x)\sin(x) = x + x^2 - \frac{1}{3!}x^3 - \frac{1}{3!}x^4 + O(x^5).
+$$]{.huomautus}
+
+#- {id="tlu9KolGyGWK" math_type="svg" math_preamble="\\usepackage{pgfplots}"}
+\begin{tikzpicture}
+\begin{axis}[axis lines=middle,domain=-pi:pi, samples=100,grid=major,
+    restrict y to domain=-10:10,xtick={-pi, -(1/2)*pi, (1/2)*pi, pi},
+             xticklabels={$-\pi$,$-\pi/2$,$\pi/2$,$\pi$},
+             xlabel=$x$,xlabel=$x$,ylabel=$y$,
+             legend pos = outer north east]
+\addplot [color=red, thick, domain=-3*pi/3.5:3*pi/3.5]   {(1+x)*sin(deg(x)};
+\addplot [color=blue, thick, domain=-3*pi/3.5:3*pi/3.5] {x+x^2-x^3/6-1/6*x^4};
+\legend{$(1+x)\sin(x)$, $x + x^2 - \frac{1}{3!}x^3 - \frac{1}{3!}x^4 + O(x^5)$}
+\end{axis}
+\end{tikzpicture}
+
+#- {id="wGTmv528IWBl" area_end="polysarjatuloesim"}
+
+### Tunnettujen sarjojen kertominen {id="M4fCJYFzOZqy" .timsininen}
+
+#- {id="AOV58a9BGlJF" area="sarjasarjatuloesim" collapse="true"}
+[**Esimerkki**. Selvitä funktion $e^x\cos(x)$ Taylorin sarja origossa.]{.esimerkki}
+
+#- {id="XoIqtLQIhLnK"}
+**Ratkaisu.**
+
+Käyttämällä funktioiden $e^x$ ja $\cos(x)$ Taylorin sarjoja
+$$
+e^x = \sum_{n=0}^{\infty}\frac{x^n}{n!}, \qquad
+\cos(x) = \sum_{n=0}^{\infty}\frac{(-1)^n}{(2n)!}x^{2n}
+$$
+ja ottamalla sarjoista korkeintaan kolmatta kertalukua olevat termit mukaan saadaan
+$$
+\begin{aligned}
+e^x\cos(x) &= \left(\sum_{n=0}^{\infty}\frac{x^n}{n!}\right)
+\left(\sum_{n=0}^{\infty}\frac{(-1)^n}{(2n)!}x^{2n}\right) \\
+&= \left(1 + x + \frac{1}{2!}x^2 + \frac{1}{3!}x^3 + O(x^4)\right)
+\left(1 - \frac{1}{2!}x^2 + O(x^4)\right)\quad\Big|\,\text{kerrotaan termeittäin} \\
+&= 1 - \hblue{\frac{1}{2!}x^2} + \hgreen{O(x^4)} + x - \hred{\frac{1}{2!}x^3} + \hgreen{O(x^5)} \\
+& \quad + \hblue{\frac{1}{2!}x^2} - \hgreen{\frac{1}{2!2!}x^4} + \hgreen{O(x^6)} + \hred{\frac{1}{3!}x^3} 
+- \hgreen{\frac{1}{3!2!}x^5} + \hgreen{O(x^7)} \\
+& \quad + \hgreen{O(x^4)}\underbrace{\left(1 - \frac{1}{2!}x^2 + O(x^4)\right)}_{=\,\cos(x)}. \\
+\end{aligned}
+$$
+Nyt kaikki neljättä tai korkeampaa kertalukua olevat termit sisältyvät virhetermiin
+$O(x^4)$, jolloin vastaukseksi saadaan
+[$$
+e^x\cos(x) = 1 + x - \hred{\frac{1}{3}x^3} + \hgreen{O(x^4)}.
+$$]{.huomautus}
+
+#- {id="GfRuW4l3jUxY" math_type="svg" math_preamble="\\usepackage{pgfplots}"}
+\begin{tikzpicture}
+\begin{axis}[axis lines=middle, samples=100,grid=major,
+    restrict y to domain=-10:10,xtick={-(1/2)*pi,-(1/4)*pi,0,(1/4)*pi, (1/2)*pi},
+             xticklabels={$-\frac{\pi}{2}$,$-\frac{\pi}{4}$,,$\frac{\pi}{4}$,$\frac{\pi}{2}$},
+             xlabel=$x$,xlabel=$x$,ylabel=$y$,
+             legend pos = outer north east]
+\addplot [color=red, thick, domain=-3*pi/5:3*pi/5.5]   {e^x*cos(deg(x)};
+\addplot [color=blue, thick, domain=-3*pi/5:3*pi/5.5] {1+x-x^3/3};
+\legend{$e^x\cos(x)$, $1+x-\frac{1}{3}x^3+O(x^4)$}
+\end{axis}
+\end{tikzpicture}
+
+#- {id="gZBP8j91uHFD" area_end="sarjasarjatuloesim"}
+
+### Tunnettujen sarjojen jakaminen {id="qlSkTr4w7db7" .timsininen #sarjojenjakaminen}
+
+#- {id="tU0LveOwx3yQ" area="sarjasarjajakoesim" collapse="true"}
+[**Esimerkki**. Selvitä funktion $\tan(x)$ Taylorin sarja.]{.esimerkki}
+
+#- {id="nuC4XyL9OeVH"}
+**Ratkaisu.**
+
+Muistetaan, että
+$$\tan(x)=\frac{\sin(x)}{\cos(x)}.
+$$
+Käyttämällä sinin ja kosinin
+Taylorin sarjoja
+$$
+\sin(x) = \sum_{n=0}^{\infty}\frac{(-1)^n}{(2n+1)!}x^{2n+1}, \qquad
+\cos(x) = \sum_{n=0}^{\infty}\frac{(-1)^n}{(2n)!}x^{2n}
+$$
+
+ja ottamalla sarjoista korkeintaan kuudetta kertalukua olevat termit mukaan saadaan
+$$
+\tan(x) = \frac{x-\frac{1}{3!} x^3+\frac{1}{5!} x^5+ O(x^7)}{1-\frac{1}{2!} x^2+\frac{1}{4!} x^4 + O(x^6)}.
+$$
+
+Yllä olevan yhtälön oikea puoli voidaan laskea eri tavoilla.
+
+#- {id="Mq1MogNsk0f2" area="tan_sarja_jakokulma" collapse="true"}
+[**Tapa 1: Jakokulma**.]{.esimerkki}
+
+#- {id="fYQmJU1ja5KW"}
+Jakolasku voidaan suorittaa jakokulmassa, jolloin saadaan
+
+\begin{align*}
+& \ x+\frac{1}{3}x^3+\frac{2}{15}x^5+O(x^7)\\
+& \underline{\hspace{4cm}}\\
+1-\frac{1}{2!} x^2+\frac{1}{4!} x^4 + O(x^6) \ \Bigg|& \  x-\frac{1}{3!} x^3+\frac{1}{5!} x^5+ O(x^7) \\
+-& \ x + \frac{1}{2!}x^3-\frac{1}{4!} x^5+ O(x^7) \\
+& \underline{\hspace{4cm}}\\
+& \ \qquad \frac{1}{3}x^3-\frac{1}{30} x^5+ O(x^7) \\
+& \quad - \frac{1}{3}x^3+\frac{1}{2!3} x^5 - \frac{1}{4!3} x^7+ O(x^7)\\
+& \quad \underline{\hspace{5.1cm}}\\
+& \qquad \qquad \ \quad \frac{2}{15}x^5 +O(x^7) \\
+& \qquad \qquad  - \frac{2}{15}x^5 +O(x^7) \\
+& \qquad \qquad \underline{\hspace{2.6cm}}\\
+& \qquad \qquad \qquad \quad \quad \quad \! \! O(x^7)
+\end{align*}
+
+#- {id="GND71NiDKleb" area_end="tan_sarja_jakokulma"}
+
+#- {id="i6YMaQB6LA9M" area="tan_sarja_sarjojentulo" collapse="true"}
+[**Tapa 2: Sarjojen tulo**.]{.esimerkki}
+
+#- {id="pydn9QVZGv7P"}
+$$
+\begin{aligned}
+\tan(x) &= \frac{x-\frac{1}{3!} x^3+\frac{1}{5!} x^5+ O(x^7)}
+{1-\frac{1}{2!} x^2+\frac{1}{4!} x^4 + O(x^6)}\\
+&= \left(x-\frac{1}{3!} x^3+\frac{1}{5!} x^5+ O(x^7)\right)
+\left(\frac{1}{1-\frac{1}{2!} x^2+\frac{1}{4!} x^4 + O(x^6)}\right).
+\end{aligned}
+$$
+
+Tehdään nyt muuttujanvaihto $\blue u=\frac{1}{2!}x^2-\frac{1}{4!}x^4+O(x^6)$,
+jolloin saadaan
+$$
+\frac{1}{1-\left(\frac{1}{2!}x^2-\frac{1}{4!} x^4 + O(x^6)\right)}
+=\frac{1}{1-\blue u}.
+$$
+
+Huomataan, että $\cos{(x)} =1-\blue u$ eli $\blue u=1-\cos{(x)}$. Koska 
+kosinin arvot ovat $-1$ ja $1$ välissä, niin $\blue u$:n arvot ovat $2$ ja $0$ ja
+välissä. Tällöin $\blue u$:n iteisarvo on pienempää kuin
+$1$, kun $\cos{(x)}\geq 0$ eli kun $-\frac{\pi}{2}<x<\frac{\pi}{2}$.
+
+#- {id="nLo2oT3ktYDs" math_type="svg" math_preamble="\\usepackage{pgfplots}\\usepgfplotslibrary{fillbetween}\\pgfplotsset{compat=1.16}\\usetikzlibrary{patterns}"}
+\begin{tikzpicture}
+\begin{axis}[axis lines=middle,
+             samples=100,grid=major,
+             xtick={-pi, -(1/2)*pi, (1/2)*pi, pi},
+             xticklabels={$-\pi$,$-\frac{\pi}{2}$,$\frac{\pi}{2}$,$\pi$},
+             ytick={-1,1, 2},
+             xlabel=$x$,xlabel=$x$,ylabel=$y$,
+             legend pos = outer north east]
+\addplot [name path=eka,color=blue, thick,domain={-4:4}]    {1-cos(deg(x))};
+\addplot [name path=toka,color=red, thick,domain={-4:4}]    {1};
+\addplot [color=green, thick, domain={-4:4}]    {cos(deg(x))};
+\addplot[pattern=north west lines, pattern color=violet!80]fill between[of = eka and toka,soft clip={domain=-pi/2:pi/2}];
+\legend{$u = 1-\cos(x)$, $f(x)=1$, $g(x) = \cos(x)$ }
+\end{axis}
+\end{tikzpicture}
+
+#- {id="UiSiMHWYjLI0"}
+Tällöin $\displaystyle{\frac{1}{1-\blue u}}$
+on geometrisen sarjan $\displaystyle{\sum_{n=0}^\infty\blue u^n}$
+[summa](%%sarjat%%/sarjat_osa1#geomsarjansumma) ja saadaan
+$$
+\begin{aligned}
+\frac{1}{1-\blue u} &= \sum_{n=0}^\infty\blue u^n =
+\sum_{n=0}^\infty\left(\frac{1}{2!}x^2-\frac{1}{4!}x^4+O(x^6)\right)^n&&\ (*) \\
+&= 1+ \frac{1}{2!}x^2-\frac{1}{4!}x^4+O(x^6) + \frac{1}{2!2!}x^4 +O(x^6)\\
+&= 1 + \frac{1}{2!}x^2+\frac{5}{24}x^4+O(x^6).
+\end{aligned}
+$$
+
+$(*)$ kun $n\geq2$ kaikki termit ovat vähintään 6. kertalukua
+[paitsi[$\left(\frac{1}{2!}x^2-\frac{1}{4!}x^4+O(x^6)\right)^2$ 
+$=\left(\frac{1}{2!}x^2-\left(\frac{1}{4!}x^4+O(x^6)\right)\right)^2$
+$=\left(\frac{1}{2!}x^2\right)^2 +2\left(\frac{1}{2!}x^2\right)
+\left(\frac{1}{4!}x^4+O(x^6)\right)+\left(\frac{1}{4!}x^4+O(x^6)\right)^2$%%tooltip%%
+$\displaystyle{\frac{1}{2!2!}x^4}$.
+
+
+Nyt voidaan laskea tangenttifunktion Taylorin sarja kahden sarjan tulona
+
+\begin{aligned}
+\tan(x) = \left(x-\frac{1}{3!} x^3+\frac{1}{5!} x^5+ O(x^7)\right)
+\left(1 + \frac{1}{2!}x^2+\frac{5}{24}x^4+O(x^6)\right).
+\end{aligned}
+ Kun sarjat kerrotaan termeittäin, niin suurin osa termeistä on vähintään 7. kertalukua
+ eli ne sisältyvät virhetermiin $O(x^7)$. Tuloksi saadaan
+ 
+\begin{aligned}
+\tan(x) =& \ x-\frac{1}{3!} x^3+\frac{1}{5!} x^5+ O(x^7)\\
+&+\frac{1}{2!}x^2 \left(x-\frac{1}{3!} x^3+\frac{1}{5!} x^5+ O(x^7)\right)\\
+&+\frac{5}{24}x^4 \left(x-\frac{1}{3!} x^3+\frac{1}{5!} x^5+ O(x^7)\right)\\
+&+O(x^6) \left(x-\frac{1}{3!} x^3+\frac{1}{5!} x^5+ O(x^7)\right)\\
+=& \ x-\frac{1}{3!} x^3 + \frac{1}{2!}x^3+\frac{1}{5!} x^5 - \frac{1}{3!2!}x^5
++\frac{5}{24}x^5 + O(x^7)\\
+=& \ x+\frac{1}{3}x^3+\frac{2}{15}x^5+ O(x^7).
+\end{aligned}
+
+#- {id="hvYbdqki6bP3" area_end="tan_sarja_sarjojentulo"}
+
+#- {id="sT2U0i8wOl2a"}
+Siten tangenttifunktion Taylorin sarja on
+[$$
+\tan(x) = x+\frac{1}{3}x^3+\frac{2}{15}x^5+O(x^7).
+$$]{.huomautus}
+
+#- {id="IB2ZnSUxzkiX" math_type="svg" math_preamble="\\usepackage{pgfplots}"}
+\begin{tikzpicture}
+\begin{axis}[axis lines=middle,domain=-pi:pi, samples=100,grid=major,
+    restrict y to domain=-10:10,xtick={-(1/2)*pi,-(1/4)*pi,0,(1/4)*pi,(1/2)*pi},
+             xticklabels={$-\dfrac{\pi}{2}$,$-\dfrac{\pi}{4}$,,$\dfrac{\pi}{4}$,$\dfrac{\pi}{2}$},
+             xlabel=$x$,xlabel=$x$,ylabel=$y$,
+             legend pos = outer north east]
+\addplot [color=red, thick, domain=-1.7:1.7]   {tan(deg(x)};
+\addplot [color=blue, thick, domain=-pi/2:pi/2] {x+x^3/3+2/15*x^5};
+\legend{$\tan(x)$, $x+\frac{1}{3}x^3+\frac{2}{15}x^5+O(x^7)$}
+\end{axis}
+\end{tikzpicture}
+
+#- {id="OYlZJfj6biha" area_end="sarjasarjajakoesim"}
+
+### Polynomin sijoittaminen tunnettuun sarjaan (muuttujanvaihto) {id="1sso7tePCXZ7" .timsininen}
+
+#- {id="jdxiUlrqiZdp" area="sarjamuutvaihtoesim" collapse="true"}
+[**Esimerkki**. Selvitä funktion $e^{-x^2}$ Taylorin sarja.]{.esimerkki}
+
+#- {id="HMucNGAIaKVE"}
+**Ratkaisu.**
+
+
+Muistetaan, että eksponenttifunktion Taylorin sarja on
+$$
+\sum_{n=0}^{\infty}\frac{x^n}{n!}.
+$$
+Tehdään muuttujanvaihto $-x^2 = \red t$, jolloin saadaan
+$$
+\begin{aligned}
+e^{-x^2} &= e^{\red t} =  \sum_{n=0}^{\infty}\frac{\red t^n}{n!}\\
+&= \sum_{n=0}^{\infty}\frac{(-x^2)^n}{n!} \\
+&= \sum_{n=0}^{\infty}\frac{(-1)^nx^{2n}}{n!}\\
+&= 1 - x^2 + \frac{1}{2!}x^4 + O(x^6),
+\end{aligned}
+$$
+missä virhetermi $O(x^6)$ sisältää kaikki kuudetta tai korkeampaa kertalukua
+olevat termit.
+
+Siten funktion $\displaystyle{e^{-x^2}}$ Taylorin sarja on
+[$$
+e^{-x^2} = 1 - x^2 + \frac{1}{2}x^4 + O(x^6)
+$$]{.huomautus}
+
+#- {id="y9IpohNExbhS" math_type="svg" math_preamble="\\usepackage{pgfplots}"}
+\begin{tikzpicture}
+\begin{axis}[axis lines=middle,,domain=-2:2, samples=100,grid=major,
+    restrict y to domain=-2:1.8,
+    xlabel=$x$,xlabel=$x$,ylabel=$y$,
+    legend pos = outer north east]
+\addplot [color=red, thick]    {e^(-x^2)};
+\addplot [color=blue, thick]    {1-x^2+x^4/2};
+\legend{$e^{-x^2}$, $1-x^2+\frac{x^4}{2}+O(x^6)$}
+\end{axis}
+\end{tikzpicture}
+
+#- {id="7mlWMKZ1eni8" area_end="sarjamuutvaihtoesim"}
+
+### Sarjan sijoittaminen toiseen sarjaan {id="VbweSZJVfpqU" .timsininen}
+
+#- {id="cc14kjKX5Sp6"}
+Sarjakehitelmä voidaa sijoittaa toisen sarjan muuttujaan, jos ja vain jos
+sijoitettavan sarjan arvot ovat toisen sarjan
+[suppenemisvälillä](%%sarjat%%/sarjat_osa1#potsarjasuppeneminen).
+
+#- {id="c9TQ4P9ygVyx" area="sarjasarja_sijoitus_esim" collapse="true"}
+[**Esimerkki**. Selvitä funktion $e^{\tan(x)}$ Taylorin sarja.]{.esimerkki}
+
+#- {id="V8RQfpjgg433"}
+**Ratkaisu.**
+
+Muistetaan, että eksponenttifunktion Taylorin sarja on
+$$
+\sum_{n=0}^{\infty}\frac{x^n}{n!}.
+$$
+Tangenttifunktion Taylorin sarja saadaan määritelmästä tai esimerkiksi 
+[tunnettuja sarjoja jakamalla](#sarjojenjakaminen) ja se on
+$$
+\tan(x) = x+\frac{1}{3}x^3+\frac{2}{15}x^5+O(x^7).
+$$
+
+#- {id="aB0d7UQdREux"}
+Koska eskponenttifunktion Taylorin sarja suppenee kaikilla reaaliluvuilla, niin
+tangenttifunktion Taylorin sarja voidaan sijoittaa siihen. Tällöin
+
+$$
+\begin{aligned}
+e^{\red{\tan(x)}} &= \sum_{n=0}^{\infty}\frac{(\red{\tan(x)})^n}{n!}\\
+&= 1+\tan(x)+\frac{1}{2!}\tan^{2}(x)+\frac{1}{3!}\tan^{3}(x)+\frac{1}{4!}\tan^{4}(x)+\blue{O(x^5)}\\
+&= 1 + \left(x+\frac{1}{3}x^3+\frac{2}{15}x^5+O(x^7)\right)\\
+& \quad + \frac{1}{2!}\green{\left(x+\frac{1}{3}x^3+\frac{2}{15}x^5+O(x^7)\right)}^2&&\ (*)\\
+& \quad + \frac{1}{3!}\left(x+\frac{1}{3}x^3+\frac{2}{15}x^5+O(x^7)\right)^3\\
+& \quad + \frac{1}{4!}\left(x+\frac{1}{3}x^3+\frac{2}{15}x^5+O(x^7)\right)^4+\blue{O(x^5)}\\
+&= 1+x+\frac{1}{3}x^3+ \frac{1}{2!}\hmagenta{x^2}+\frac{1}{2!}\hblue{\frac{2}{3}x^4}
++\frac{1}{3!}\hgreen{x^3}+\frac{1}{4!}\hred{x^4}+\blue{O(x^5)}\\
+&= 1+x+\frac{1}{2}x^2+\frac{1}{2}x^3+\frac{3}{8}x^4+\blue{O(x^5)}.
+\end{aligned}
+$$
+
+#- {id="wgjdgWjFGob4"}
+Yllä olevassa laskussa virhetermi $\blue{O(x^5)}$ saatiin pienen kulman approksimaatiolla:
+$\sin(x)\approx x, \, \cos(x)\approx 1$, kun $x$ on pieni, jolloin
+$\tan(x)=\frac{\sin(x)}{\cos(x)}\approx x.$
+
+$(*)$ Tangentin sarjan neliö:
+$$
+\begin{aligned}
+& \green{\left(x+\frac{1}{3}x^3+\frac{2}{15}x^5+O(x^7)\right)}^{2}
+=\left(x+\red{\left(\frac{1}{3}x^3+\frac{2}{15}x^5+O(x^7)\right)}\right)^2\\
+=&\ x^2 + 2x\red{\left(\frac{1}{3}x^3+\frac{2}{15}x^5+O(x^7)\right)}
++\red{\left(\frac{1}{3}x^3+\blue{\left(\frac{2}{15}x^5+O(x^7)\right)}\right)}^2\\
+=&\ x^2+2x\cdot\frac{1}{3}x^3+2x\cdot\frac{2}{15}x^5 + O(x^8)\\
+& +\frac{1}{9}x^6+\frac{2}{3}x^3\blue{\left(\frac{2}{15}x^5+O(x^7)\right)}
++\blue{\left(\frac{2}{15}x^5+O(x^7)\right)}^2\\
+=&\ \hmagenta{x^2}+\hblue{\frac{2}{3}x^4} + O(x^5). 
+\end{aligned}
+$$
+
+Vastaavasti voidaan laskea kolmanteen ja neljänteen potenssiin korotukset
+[Pascalin kolmion](https://en.wikipedia.org/wiki/Pascal%27s_triangle)
+tai [binomisarjan](#binomisarja) avulla, jolloin saadaan
+$$
+\left(x+\frac{1}{3}x^3+\frac{2}{15}x^5+O(x^7)\right)^3 = \hgreen{x^3} + O(x^5)
+$$
+ja
+$$
+\left(x+\frac{1}{3}x^3+\frac{2}{15}x^5+O(x^7)\right)^4 = \hred{x^4} + O(x^5).
+$$
+
+#- {id="9uZVlzYVfITh"}
+Siten funktion $e^{\tan(x)}$ Taylorin sarja on
+[$$
+e^{\tan(x)} = 1+x+\frac{1}{2}x^2+\frac{1}{2}x^3+\frac{3}{8}x^4+O(x^5).
+$$]{.huomautus}
+
+#- {id="DDru8iLQ1je4"}
+Hiukkanen, joka liikkuu $x$-akselilla potentiaalienergiassa $U(x)$, jolla on lokaali minimi kohdassa $x=x_0$.
+Tarkastellaan värähtelyjä tämän kohdan lähiympäristössä. Kehitetään potentiaalienergia
+Taylorin sarjaksi pisteen $x_0$ ympäristössä
+$$
+\begin{aligned}
+U(x) =& \ U(x_0) + (x-x_0)\left(\frac{\partial U}{\partial x}\right)_{x=x_0}
++ \frac{1}{2!}(x-x_0)^2\left(\frac{\partial^2U}{\partial x^2}\right)_{x=x_0} \\
+& \ + \frac{1}{3!}(x-x_0)^3\left(\frac{\partial^3U}{\partial x^3}\right)_{x=x_0}
++ O((x-x_0)^4)
+\end{aligned}
+$$
+Koska $x_0$ on lokaali minimi, niin $\left(\frac{\partial U}{\partial x}\right)_{x=x_0}= 0$
+ja kolmannen tai suuremman asteen termit ovat pieniä, jolloin potentiaalienergiaksi saadaan
+
+\begin{align*}
+U(x)\approx U(x_0)+\frac{1}{2}k(x-x_0)^2,
+\end{align*}
+missä 
+\begin{align*}
+k=\left(\frac{\partial^2U}{\partial x^2}\right)_{x=x_0}.
+\end{align*}
+Tällöin hiukkaseen vaikuttava voima on
+\begin{align*}
+F=-\frac{\text{d}U}{\dx}\approx -k(x-x_0)
+\end{align*}
+eli pienet värähtelyt ovat approksimatiivisesti harmonisia, kunhan $k\neq0$.
+
+Tämä esimerkki osoittaa miksi harmoniseen värähtelijään päädytään fysiikassa 
+ja kemiassa tutkittaessa värähtelyjä monissa tilanteissa monenlaisista voimista.
+
+#- {id="I4GMzQatLHJY" area_end="potenergia_esim"}
+
+## Kahden muuttujan Taylorin sarja %%työnalla%% {id="oeIz0ocuTUWd" .timoranssi #taylor2d}
+
+#- {id="WbZIsiJY7S3t" area="2d_taylor" collapse="true"}
+[**Kaksiulotteinen Taylorin sarja**]{.esimerkki}
+
+#- {id="F84GulXTZsPA"}
+Joissain tapauksissa on käsiteltävä useampiulotteisia funktiota ja myös niille
+voidaan esittää Taylorin sarjakehitelmä. Tämä kuitenkin eroaa hieman yksiulotteisesta
+tapauksesta.
+
+[Kaksiulotteisen funktion $f(x,\, y)$ Taylorin sarja pisteessä $(x_0,\, y_0)$ on
+$$
+\begin{aligned}
+f(x,y) =& \ f(x_0,y_0) + \frac{\partial }{\partial x}f(x_0,y_0)(x-x_0)
++ \frac{\partial }{\partial y}f(x_0,y_0)(y-y_0)\\
+& + \frac{1}{2!}\frac{\partial^2 }{\partial x^2}f(x_0,y_0)(x-x_0)^2
++\frac{1}{2!}\frac{\partial^2 }{\partial y^2}f(x_0,y_0)(y-y_0)^2\\
+& + \frac{\partial }{\partial y}\frac{\partial }{\partial x}
+f(x_0,y_0)(x-x_0)(y-y_0) + O(|(x-x_0,\, y-y_0)|^3)
+\end{aligned}
+$$]{.huomautus}
+
+Huomaa, että tässä sarjakehitelmässä on osittaisderivaattojen suhteen vastaavat
+osat kuin yksiulotteisessa tapauksessa ja lisäksi ristitermi
+$\frac{\partial }{\partial y}\frac{\partial }{\partial x}$, jossa on molempien
+muuttujien osittaisderivaatat.
+
+Sarjakehitelmä voidaan esittää hieman kompaktimmassa muodossa [gradientin](%%derivaatta%%#gradientti)
+$\nabla f$
+ja [Hessen matriisin](https://en.wikipedia.org/wiki/Hessian_matrix)
+$$
+Hf =
+\begin{bmatrix}
+\frac{\partial^2 f}{\partial x^2} & \frac{\partial f}{\partial x\partial y} \\
+\frac{\partial^2 f}{\partial y\partial x} & \frac{\partial^2 f}{\partial y^2}
+\end{bmatrix}
+$$
+avulla
+$$
+\begin{aligned}
+f(x,y) =& \ f(x_0,y_0)+\nabla f(x_0,y_0)\cdot(x-x_0,y-y_0)\\
+& +\frac{1}{2!}Hf(x_0,y_0)(x-x_0,y-y_0)\cdot(x-x_0,\,y-y_0)\\
+& + O(|(x-x_0,\, y-y_0)|^3).
+\end{aligned}
+$$
+
+#- {id="sOTgoRo4972k" area_end="2d_taylor"}
+
+#- {id="dhXuruXnWYxo" area="2d_taylor_2" collapse="true"}
+[**Esimerkki**. Funktion approksimointi pisteen $(x_0,\, y_0)$ ympäristössä.]{.esimerkki}
+
+#- {id="xeTyPF4I6xmO"}
+Joskus halutaan tutkia funktion $f(x,y)$ arvoa pisteen $(x_0,\, y_0)$ ympäristössä.
+Tällöin Taylorin sarjan ja muuttujanvaihtojen $\delta x = x-x_0$ ja $\delta y = y-y_0$
+saadaan
+$$
+\begin{aligned}
+f(x_0+\delta x,\,y_0+\delta y) =& \ f(x_0,y_0) + \frac{\partial }{\partial x}f(x_0,y_0)\delta x
++ \frac{\partial }{\partial y}f(x_0,y_0)\delta y\\
+& + \frac{1}{2!}\frac{\partial^2 }{\partial x^2}f(x_0,y_0)\delta x^2
++\frac{1}{2!}\frac{\partial^2 }{\partial y^2}f(x_0,y_0)\delta y^2\\
+& + \frac{\partial }{\partial y}\frac{\partial }{\partial x}
+f(x_0,y_0)\delta x\delta y + O(|(\delta x, \, \delta y)|^3).
+\end{aligned}
+$$
+
+#- {id="u5M2RP6bFazR" area_end="2d_taylor_2"}
