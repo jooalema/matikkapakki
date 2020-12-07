@@ -52,10 +52,13 @@ Epäjatkuvia funktioita tai funktioita, joiden kuvaajassa on teräviä kulmia, k
 ei voida approksimoida Taylorin sarjan avulla, mutta niitä voidaan approksimoida
 Fourier'n sarjan avulla.
 
-**Fourier'n sarjalla** approksimoidaan funktiota jaksollisilla funktioilla ja erityisesti
+**Fourier'n sarjalla** approksimoidaan funktiota jaksollisilla funktioilla. Erityisesti
 Fourier'n sarjalla approksimoidaan jaksollisia funktioita koko
 reaalilukuakselilla tai  suljetulla välillä määriteltyä funktiota, joka voidaan
 jatkaa jaksolliseksi funktioksi koko reaalilukuakselille.
+
+#- {id="ITXppHphnKVu" area="jaksollisuus" collapse="true"}
+[**Jaksollisuus**]{.esimerkki}
 
 #- {id="fR8xaFYlSEB2"}
 [Funktio $f(x)$ on $p$-jaksollinen, jos
@@ -94,6 +97,20 @@ Jaksoa voi tarkastella millä tahansa $2\pi$-pituisella välillä. Alla olevassa
 \legend{$\sin (x)$, $\cos (x)$}
 \end{axis}
 \end{tikzpicture}
+
+#- {id="5dupHskWrpf5"}
+Myös funktio $e^{ikx}$ on $2\pi$-jaksollinen, sillä
+$$
+\begin{aligned}
+e^{ik(x+2\pi)}&=e^{ikx}e^{i2k\pi}\\
+&=(\cos(kx)+i\sin(kx))(\underbrace{\cos(2k\pi)}_{= \ 1}
++i\underbrace{\sin(2k\pi)}_{= \ 0})\\
+&= (\cos(kx)+i\sin(kx)) \\
+&= e^{ikx}.
+\end{aligned}
+$$
+
+#- {id="QD1YAS3eavYA" area_end="jaksollisuus"}
 
 ## Reaalinen Fourier'n sarja {id="nCQhGpOSRtTv" .timoranssi #reaalinenfourier}
 
@@ -342,11 +359,14 @@ $$]{.huomautus}
 #- {id="baU00RXKwyoP"}
 Fourier'n sarjan suppenemisen selvittäminen eroaa Taylorin sarjan ja potenssisarjasta.
 Taylorin ja potenssisarjan tapauksessa tutkitaan muodostetun sarjan kertoimien
-käyttäytymistä kun sarjan termien määrä kasvaa rajatta. Fourier'n sarjan tapauksessa
-puolestaan tutkitaan toteuttaa kyseinen funktio tietyt ehdot suppenemiselle.
-Näitä ehtoja sanotaa **Dirichlet'n ehdoiksi**.
+käyttäytymistä, kun sarjan termien määrä kasvaa rajatta. Fourier'n sarjan tapauksessa
+puolestaan tutkitaan toteuttaako kyseinen funktio tietyt ehdot suppenemiselle.
+Näitä ehtoja sanotaan **Dirichlet'n ehdoiksi**.
 
 #### Dirichlet'n ehdot {id="JfEhyLgXYJ0L" .timsininen}
+
+#- {id="TId0m1rKCT7q" area="dirichlet_ehdot" collapse="true"}
+[**Dirichlet'n ehdot** ]{.esimerkki}
 
 #- {id="UQllNScJQAYA"}
 [Funktio $f(x)$ toteuttaa Dirichlet'n ehdot, jos \
@@ -377,6 +397,11 @@ $$
 F(-L)=F(L)=\frac{f(-L)+f(L)}{2}.
 $$
 
+#- {id="2hlonMr6nGfd" area_end="dirichlet_ehdot"}
+
+#- {id="I808K6QE1QPU" area="esim_dirichlet" collapse="true"}
+[**Esimerkki**. Dirichlet'n ehtojen toteutuminen.]{.esimerkki}
+
 #- {id="j7mrEcVldgGr"}
 Funktio $f(x)=\sin(\frac{1}{x})$ ei toteuta Dirichlet'n ehtoja välillä $[-L,\,L]$,
 koska sillä on ääretön määrä ääriarvoja. Kun $x$ lähestyy nolla niin $f(x)$
@@ -398,6 +423,103 @@ on vain kaksi ääriarvoa -1 ja 1 ja
 $$
 \int_{-L}^{L}|f(x)|\dx = \int_{0}^{L}2 \dx = 2L < \infty.
 $$
+
+#- {id="B5MeD5kgp3WZ" area_end="esim_dirichlet"}
+
+## Fourier sini- ja kosinisarja {id="XKWNOTmjHVT6" .timoranssi #fouriersinikosini}
+
+#- {id="izPbWXwBX07s" area="pariton_parillinen" collapse="true"}
+[Pariton ja parillinen funktio]{.esimerkki}
+
+#- {id="YODOghiscuK1"}
+Muistetaan, että parittoman funktion integraali yli symmetrisen välin on nolla.
+
+Jos funktio $f(x)$ on **parillinen** eli $f(-x)=f(x)$, niin tulo $f(x)\sin(\frac{k\pi x}{L})$
+on pariton ja siten
+$$
+b_k = \frac{1}{L}\int_{-L}^{L}f(x)\sin\left(\frac{k\pi x}{L}\right)\dx = 0.
+$$
+Eli parillisen funktion Fourier'n sarja voidaan kirjoittaa pelkästään kosinien avulla
+$$
+f(x) = \frac{a_0}{2}+\sum_{k=1}^{\infty}a_k\cos\left(\frac{k\pi x}{L}\right).
+$$
+
+Jos funktio $f(x)$ on **pariton** eli $f(-x)=-f(x)$, niin tulo $f(x)\cos(\frac{k\pi x}{L})$
+on pariton ja siten
+$$
+a_k = \frac{1}{L}\int_{-L}^{L}f(x)\cos\left(\frac{k\pi x}{L}\right)\dx = 0.
+$$
+Eli parittoman funktion Fourier'n sarja voidaan kirjoittaa pelkästään sinien avulla.
+$$
+f(x) = \sum_{k=1}^{\infty}b_k\sin\left(\frac{k\pi x}{L}\right).
+$$
+
+#- {id="60gKK0kMPXw1" area_end="pariton_parillinen"}
+
+#- {id="upMgjQV4eqQV" area="kosinisarja" collapse="true"}
+[**Kosinisarja**.]{.esimerkki}
+
+#- {id="DdaXdPJcOKdB"}
+Tarkastellaan funktiota $f(x)$ joka on määritelty välillä $[0, L]$ ja
+toteuttaa Dirichlet'n ehdot.
+
+Jatketaan funktio $f(x)$ **parilliseksi** välille $[-L, L]$. **Parillinen jatke**
+muodostetaan seuraavasti
+$$
+f_e(x) =
+\begin{cases}
+f(x), & 0\leq x \leq L\\
+f(-x), & -L\leq x < 0.
+\end{cases}
+$$
+Funktion $f(x)$ **Fourier'n kosinisarja** saadaan muodostamalla funktion $f_e(x)$
+Fourier'n sarja. Koska funktio $f_e(x)$ on parillinen, niin funktion $f(x)$ kosinisarja on
+[$$
+C(x) = \frac{a_0}{2}+\sum_{k=1}^{\infty}a_k\cos\left(\frac{k\pi x}{L}\right), 
+$$
+missä
+$$
+a_k = \frac{2}{L}\int_{0}^{L}f(x)\cos\left(\frac{k\pi x}{L}\right)\dx.
+$$]{.huomautus}
+
+Välillä $[0, L]$ määritellyn funktio $f(x)$ kosinisarja suppenee sen parilliseen
+jatkeeseen $f_e(x)$ välillä $[-L, L]$.
+
+#- {id="jjroTqFOEtTY" area_end="kosinisarja"}
+
+#- {id="Rj4P9xeUFmvb" area="sinisarja" collapse="true"}
+[**Sinisarja**.]{.esimerkki}
+
+#- {id="7xHKMUg61iCv"}
+Tarkastellaan funktiota $f(x)$ joka on määritelty välillä $[0, L]$ ja
+toteuttaa Dirichlet'n ehdot.
+
+Jatketaan funktio $f(x)$ **parittomaksi** välille $[-L, L]$. **Pariton jatke**
+muodostetaan seuraavasti
+$$
+f_o(x) =
+\begin{cases}
+f(x), & 0\leq x \leq L\\
+-f(-x), & -L\leq x < 0.
+\end{cases}
+$$
+Funktion $f(x)$ **Fourier'n sinisarja** saadaan muodostamalla funktion $f_o(x)$
+Fourier'n sarja. Koska funktio $f_o(x)$ on pariton, niin funktion $f(x)$ sinisarja on
+[$$
+S(x) = \sum_{k=1}^{\infty}b_k\sin\left(\frac{k\pi x}{L}\right), 
+$$
+missä
+$$
+b_k = \frac{2}{L}\int_{0}^{L}f(x)\sin\left(\frac{k\pi x}{L}\right)\dx.
+$$]{.huomautus}
+
+Välillä $[0, L]$ määritellyn funktio $f(x)$ sinisarja suppenee sen parittomaan
+jatkeeseen $f_o(x)$ välillä $[-L, L]$.
+
+#- {id="jMoBFwQ7PDbZ" area_end="sinisarja"}
+
+#- {id="yVipOBOgnYYh"}
+Esimerkki %%työnalla%%
 
 ## Fourier'n approksimointi graafisesti (Python) {id="laWd7DoWN6gk" .timoranssi #fourierpython}
 

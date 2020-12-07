@@ -45,6 +45,7 @@ table:
 # %%työnalla%% Taylorin sarja %%työnalla%% {id="m4b7FXftqJ2U"}
 
 ## Johdantoa Taylorin sarjaan {id="sDl0XzQUl4oe" .maaritelma #johdanto}
+%%työnalla%%
 
 #- {id="M0zm5Wxk3zYT" area="miksi_taylor" collapse="true"}
 [Miksi Taylorin sarjaa käytetään?]{.esimerkki}
@@ -54,66 +55,49 @@ Toisinaan vastaan tulee funktioita, joita on liian vaikea integroida, derivoida 
 Tällaisissa tilanteissa joudutaan käyttämään approksimaatiota, joka on riittävän tarkka kysytyllä välillä kuvaamaan alkuperäistä funktiota.
 [Brook Taylor](https://en.wikipedia.org/wiki/Brook_Taylor) keksi vuonna 1715 tavan, miten muodostaa polynomifunktio, joka approksimoi alkuperäistä funktiota annetun pisteen ympäristössä.
 
-Tällä sivulla on runsaasti esimerkkejä Taylorin sarjan hyötykäytöstä. 
-Tutustu rauhassa siihen, mikä itseäsi kiinnostaa.
+#- {id="jslLOPhNekgr"}
+Taylorin sarjan avulla saadaan esimerkiksi yhteys klassisen ja relativistisen fysiikan välille.
+Tarkastellaan hiukkasen liike-energiaa. 
+Olkoon $m_0$ hiukkasen lepomassa, $m$ sen relativistinen massa, $v$ hiukkasen nopeus ja $c$ valonnopeus.
 
-#- {id="YSw80IaYoXC5"}
-Olkoon meillä tehtävänä määrittää funktion 
+Klassinen fysiikka:
+
 $$
-f(x) = \frac{\sin (x)-x}{x^3}
+E_k = \frac{1}{2} m_0v^2.
 $$
-[raja-arvo](%%raja_arvo%%) pisteessä $x=0$. Sijoittamalla $x=0$ annettuun funktioon antaisi muotoa "$\frac{0}{0}$" olevan vastauksen. 
-On siis keksittävä jokin muu keino avuksi. Sinifunktion Taylorin sarja on
-$$
-\sin (x) = x-\frac{1}{6}x^3+\frac{1}{120}x^5+O(x^7),
-$$
-missä $O(x^7)$ kuvaa virhetermiä. Nyt sijoittamalla sinifunktion polynomiesitys alkuperäiseen funktioon, voidaan raja-arvo laskea
+
+Relativistinen fysiikka:
 
 $$
 \begin{aligned}
-&\lim_{x \to 0}\frac{\sin (x)-x}{x^3}\\
-= &\lim_{x\to 0} \frac{x-\frac{1}{6}x^3+\frac{1}{120}x^5+O(x^7)-x}{x^3} \\
-= &\lim_{x\to 0} -\frac{1}{6}+\frac{1}{120}x^2+O(x^4)\\
-= & -\frac{1}{6}.
+E_k &= mc^2 - m_0c^2 = \frac{m_0c^2}{\sqrt{1-\left( \dfrac{v}{c} \right)^2}}-m_0c^2 \\
+&= m_0c^2\left(\frac{1}{\sqrt{1-\left(\dfrac{v}{c}\right)^2}} -1 \right). 
 \end{aligned}
 $$
 
-Voitaisiin ajatella, että miksi ei vain laitettaisi funktiota johonkin laskuohjelmaan ja katsottaisi sieltä vastaus?
-Alla olevassa kuvassa on tehty juuri näin. Funktio on piirretty ohjelmallisesti ja tulos on väärin, sillä ohjelma ei osaa laskea mitä tapahtuu nollan ympäristössä.
-Huonosti koodattu piirto-ohjelma yrittää approksimoida funktiota jollain virheellisellä keinolla ja sen mukaan funktio käyttäytyy hieman oudosti nollan lähellä ja vähenee rajatta nollan ympäristössä.
+Ensi alkuun nämä kaksi yhtälöä eivät näytä kovinkaan samoilta. 
+Mutta jos relativistinen liike-energian yhtälö ilmaistaankin Taylorin sarjakehitelmän avulla, niin nähdäänkin jo jotain tuttua.
 
-#- {id="YT6SrdAsc1Lv" math_type="svg" math_preamble="\\usepackage{pgfplots}"}
-\begin{tikzpicture}
-\begin{axis}[
-    axis lines=middle,
-    title= Kaikki piirto-ohjelmat eivät osaa ratkaista vaikeita funktioita., 
-    %domain=-1:1, 
-    smooth,
-    samples=100,
-    %grid=major,
-    restrict y to domain=-0.5:0.5,
-    xlabel=$x$,xlabel=$x$,ylabel=$y$,
-    legend pos = outer north east]
-\plot [color=blue, thick, domain = -5:5]    {(sin(deg(x))-x)/x^3};
-%\plot [color=blue, thick, domain = 0.1:0.5]    {(sin(deg(x))-x)/x^3};
-%\addplot [color=red, thick]    {(-1/6*x^3+1/120*x^5)/x^3};
-\legend{$\frac{\sin(x)-x}{x^3}$}
-\end{axis}
-\end{tikzpicture}
+Taylorin polynomi funktiolle $f(x)$ on
+$$
+\begin{aligned}
+f(x) = \frac{1}{\sqrt{1-x^2}}=(1-x^2)^{-\tfrac{1}{2}} &\approx f(0) + f'(0)\cdot x^2 + \frac{f''(0)}{2!}x^4\\
+&= 1 + \frac{1}{2}x^2+\frac{3}{8}x^4,
+\end{aligned}
+$$
+jolloin siis relativistinen liike-energian yhtälö saa muodon
 
-#- {id="ddTx23LHcZ5d"}
-Sen sijaan tämä alla oleva kuva piirtyy oikein, kun ohjelmistossa on käytetty oikeita approksimaatiomenetelmiä. 
-Taylorin polynomi helpottaa tuloksen järkevyyden arviointia. 
-Muista olla aina kriittinen ja pohtia onko vastaus järkevä!
+$$
+\begin{aligned}
+E_k &\approx m_0c^2 \left( \cancel 1 + \frac{1}{2} \left(\frac{v}{c}\right)^2+\frac{3}{8}\left(\frac{v}{c}\right)^4 - \cancel 1    \right) \\
+&= \frac{1}{2}m_0v^2+ \frac{3m_0v^4}{8c^2}.
+\end{aligned}
+$$
+Klassisen fysiikan laskentatapa on siis käytännössä Taylorin polynomin ensimmäisen kertaluvun approksimaatio relativistisesta yhtälöstä ja se toimii hyvin, kun $\tfrac{v}{c} \ll 1$.
 
-``` {id="acesYZqJlGbo" plugin="csPlugin" #taylor_geo1}
-type: geogebra
-borders: false
-norun: true
-width: 650
-height: 500
-material_id: "vwzpkrbj"
-```
+#- {id="27IwzxKsgJv3"}
+Tällä sivulla on runsaasti esimerkkejä Taylorin sarjan hyötykäytöstä. 
+Tutustu rauhassa siihen, mikä itseäsi kiinnostaa.
 
 #- {id="4602KnPsw4h9" area_end="miksi_taylor"}
 
@@ -735,6 +719,134 @@ Siten funktion $e^{\tan(x)}$ Taylorin sarja on
 e^{\tan(x)} = 1+x+\frac{1}{2}x^2+\frac{1}{2}x^3+\frac{3}{8}x^4+O(x^5).
 $$]{.huomautus}
 
+#- {id="26qZ5miADT52" area_end="sarjasarja_sijoitus_esim"}
+
+## Sovelluksia %%työnalla%% {id="nU6Y5Boqje0p"}
+
+#- {id="Xx1MwfwtZkO5"}
+Taylorin sarjan sovellukset liittyvät funktioiden approksimointiin.
+
+#- {id="kYTAE66cWN0B" area="approksimaatiot" collapse="true"}
+[**Esimerkki**. Yleisimpiä approksimaatioita.]{.esimerkki}
+
+``` {id="Q9WEf2f18Ajc" plugin="timTable"}
+# forcedEditMode: true			
+table:			
+    countRow: 2			
+    countCol: 2			
+    textAlign: center			
+    rows:			
+      - row:			
+        - cell: 'Funktion approksimaatio'			
+        - cell: 'Milloin voimassa'			
+        backgroundColor: lightgray			
+        fontWeight: bold			
+      - row:			
+        - cell: '$-\ln (1-x) \approx x$'			
+        - cell: 'kun $x$ on pieni'			
+      - row:			
+        - cell: '$\sin (x) \approx x$'			
+        - cell: 'kun $x$ on pieni'        			
+      - row:			
+        - cell: '$\tan (x)\approx x$'			
+        - cell: 'kun $x$ on pieni'        			
+      - row:			
+        - cell: '$\cos (x)\approx 1$'			
+        - cell: 'kun $x$ on pieni'        			
+```
+
+#- {id="VSaAX6mRYkFf"}
+Mitä tarkoittaa, kun $x$ on pieni? Tämä on aina tapauskohtaisesti sovittava. 
+Mitään nyrkkisääntöä ei ole olemassa, mutta yleisesti voitaneen olettaa arvojen olevan $|x| \ll 1$.
+Approksimaatiot tulevat Taylorin sarjasta, joka on katkaistu ensimmäiseen termiin. 
+Hyvin usein jo tämä riittää vaadittavaan tarkkuuteen.
+
+#- {id="cgbWp8zStJMV" area_end="approksimaatiot"}
+
+#- {id="n4lDxlAe26GA" area="int_approx_esim" collapse="true"}
+[**Esimerkki**. Arvioi integraalia $I(x) = \int_{0}^{x}\frac{1}{\sqrt{1-t^4}}\text{d}t$. ]{.esimerkki}
+
+#- {id="Qym1agqYaAfh"}
+**Ratkaisu**.			
+	 			
+Integraalifunktiota $I(x)$ ei voida esittää alkeisfunktioiden avulla. Integraali			
+pitää laskea jollakin muulla tavalla. 			
+	 			
+Kehitetään integrandi Taylorin sarjaksi.			
+	 			
+Käyttämällä funktion $\sqrt{1+x}$ sarjakehitelmää   			
+$$			
+\sqrt{1+x} = 1+\frac{1}{2}x-\frac{1}{8}x^2+\frac{1}{16}x^3+O(x^4)			
+$$			
+ja tekemällä muuttujanvaihto $-t^4 = \orange{x}$ saadaan			
+	 			
+$$			
+\begin{aligned}			
+\sqrt{1-t^4} &= \sqrt{1+\orange{x}} = 1+\frac{1}{2}\orange{x}			
+-\frac{1}{8}\orange{x}^2+\frac{1}{16}\orange{x}^3+O(\orange{x}^4)\\			
+&= 1+\frac{1}{2}(-t^4)-\frac{1}{8}(-t^4)^2+\frac{1}{16}(-t^4)^3+O((-t^4)^4)\\			
+&= 1-\frac{1}{2}t^4-\frac{1}{8}t^8-\frac{1}{16}t^{12}+O(t^{16})\\			
+&= 1-\frac{1}{2}t^4+O(t^8).			
+\end{aligned}			
+$$			
+Sijoittamalla saatu sarjakehitelmä integrandiin saadaan			
+$$			
+\frac{1}{\sqrt{1-t^4}} = \frac{1}{1-\frac{1}{2}t^4+O(t^8)}.			
+$$			
+Tehdään muuttujanvaihto $\frac{1}{2}t^4+O(t^8) = \blue u$, jolloin			
+$$			
+\frac{1}{1-\frac{1}{2}t^4+O(t^8)}			
+= \frac{1}{1-\underbrace{\left(\frac{1}{2}t^4+O(t^8)\right)}_{=\,\blue u}}			
+= \frac{1}{1-\blue u}			
+$$			
+Koska funktio $\sqrt{1-t^4}$ on määritelty, kun $-1<t<1$ ja virhetermi			
+$O(t^8)\approx 0$, kun $-1<t<1$, niin $|\blue u| \approx \frac{1}{2}t^4 \leq \frac{1}{2}$,			
+kun $-1<t<1$.			
+ 			
+Siten $\frac{1}{1-\blue u}$ on [geometrisen sarjan summa](%%sarjat%%/sarjat_osa1#geomsarjansumma)			
+eli			
+ 			
+$$			
+\begin{aligned}			
+\frac{1}{\sqrt{1-t^4}} &= \frac{1}{1-\blue u} = \sum_{n=0}^{\infty}\blue u^n\\			
+&= 1 + \blue u + \blue u^2 + \blue u^3 + O(\blue u^4)\\			
+&= 1 + \left(\frac{1}{2}t^4+O(t^8)\right) + \left(\frac{1}{2}t^4+O(t^8)\right)^2			
++ \left(\frac{1}{2}t^4+O(t^8)\right)^3 + O(t^{16})\\			
+&= 1 + \frac{1}{2}t^4 + O(t^{8}).			
+\end{aligned}			
+$$			
+ 			
+Sijoittamalla tämä sarjakehitelmä integraaliin saadaan			
+$$			
+\begin{aligned}			
+I(x) &= \int_{0}^{x}\frac{1}{\sqrt{1-t^4}}\text{d}t			
+= \int_{0}^{x}\left[1 + \frac{1}{2}t^4 + O(t^{8})\right]\text{d}t\\			
+&= \intsub{0}{x}\left[t + \frac{1}{10}t^5 + O(t^{9})\right]\\			
+&= x + \frac{1}{10}x^5 + O(x^{9}).			
+\end{aligned}			
+$$			
+	 			
+Lasketaan integraalifunktion $I(x)$ arvo pisteessä $x=\frac{3}{4}$. Käyttämällä			
+äsken saatua sarjakehitelmää saadaan			
+$$			
+\begin{aligned}			
+I(\tfrac{3}{4}) &= \frac{3}{4} + \frac{1}{10}\left(\frac{3}{4}\right)^5 + O(\left(\tfrac{3}{4}\right)^9)\\			
+&\approx 0,77\red 373.			
+\end{aligned}			
+$$			
+	 			
+Laskemalla integraali jollakin laskinohjelmalla saadaan			
+$$			
+I(\tfrac{3}{4}) \approx 0,77\red759.			
+$$			
+ 			
+Sarjakehitelmällä laskettu tulos eroaa vasta kolmannessa desimaalissa.
+
+#- {id="y0fieQ6xKtdK" area_end="int_approx_esim"}
+
+#- {id="XYzJkqLgRQq3" area="potenergia_esim" collapse="true"}
+[**Esimerkki**. Hiukkasen potentiaalienergia kohdassa $x_0$.]{.esimerkki}
+
 #- {id="DDru8iLQ1je4"}
 Hiukkanen, joka liikkuu $x$-akselilla potentiaalienergiassa $U(x)$, jolla on lokaali minimi kohdassa $x=x_0$.
 Tarkastellaan värähtelyjä tämän kohdan lähiympäristössä. Kehitetään potentiaalienergia
@@ -766,7 +878,122 @@ eli pienet värähtelyt ovat approksimatiivisesti harmonisia, kunhan $k\neq0$.
 Tämä esimerkki osoittaa miksi harmoniseen värähtelijään päädytään fysiikassa 
 ja kemiassa tutkittaessa värähtelyjä monissa tilanteissa monenlaisista voimista.
 
-#- {id="I4GMzQatLHJY" area_end="potenergia_esim"}
+#- {id="xbVc105hgZ9t" area_end="potenergia_esim"}
+
+#- {id="7SVRE0A69iph" area="lim_esim" collapse="true"}
+[**Esimerkki**. Raja-arvon laskeminen.]{.esimerkki}
+
+#- {id="aHoxj0MLcgbL"}
+Olkoon meillä tehtävänä määrittää funktion 
+$$
+f(x) = \frac{\sin (x)-x}{x^3}
+$$
+[raja-arvo](%%raja_arvo%%) pisteessä $x=0$. Sijoittamalla $x=0$ annettuun funktioon antaisi muotoa "$\frac{0}{0}$" olevan vastauksen. 
+On siis keksittävä jokin muu keino avuksi. Sinifunktion Taylorin sarja on
+$$
+\sin (x) = x-\frac{1}{6}x^3+\frac{1}{120}x^5+O(x^7),
+$$
+missä $O(x^7)$ kuvaa virhetermiä. Nyt sijoittamalla sinifunktion polynomiesitys alkuperäiseen funktioon, voidaan raja-arvo laskea
+
+$$
+\begin{aligned}
+&\lim_{x \to 0}\frac{\sin (x)-x}{x^3}\\
+= &\lim_{x\to 0} \frac{x-\frac{1}{6}x^3+\frac{1}{120}x^5+O(x^7)-x}{x^3} \\
+= &\lim_{x\to 0} -\frac{1}{6}+\frac{1}{120}x^2+O(x^4)\\
+= & -\frac{1}{6}.
+\end{aligned}
+$$
+
+Voitaisiin ajatella, että miksi ei vain laitettaisi funktiota johonkin laskuohjelmaan ja katsottaisi sieltä vastaus?
+Alla olevassa kuvassa on tehty juuri näin. Funktio on piirretty ohjelmallisesti ja tulos on väärin, sillä ohjelma ei osaa laskea mitä tapahtuu nollan ympäristössä.
+Huonosti koodattu piirto-ohjelma yrittää approksimoida funktiota jollain virheellisellä keinolla ja sen mukaan funktio käyttäytyy hieman oudosti nollan lähellä ja vähenee rajatta nollan ympäristössä.
+
+#- {id="0iNRPj3e4sLU" math_type="svg" math_preamble="\\usepackage{pgfplots}"}
+\begin{tikzpicture}
+\begin{axis}[
+    axis lines=middle,
+    title= Kaikki piirto-ohjelmat eivät osaa ratkaista vaikeita funktioita., 
+    %domain=-1:1, 
+    smooth,
+    samples=100,
+    %grid=major,
+    restrict y to domain=-0.5:0.5,
+    xlabel=$x$,xlabel=$x$,ylabel=$y$,
+    legend pos = outer north east]
+\plot [color=blue, thick, domain = -5:5]    {(sin(deg(x))-x)/x^3};
+%\plot [color=blue, thick, domain = 0.1:0.5]    {(sin(deg(x))-x)/x^3};
+%\addplot [color=red, thick]    {(-1/6*x^3+1/120*x^5)/x^3};
+\legend{$\frac{\sin(x)-x}{x^3}$}
+\end{axis}
+\end{tikzpicture}
+
+#- {id="SQide8auIR1W"}
+Sen sijaan tämä alla oleva kuva piirtyy oikein, kun ohjelmistossa on käytetty oikeita approksimaatiomenetelmiä. 
+Taylorin polynomi helpottaa tuloksen järkevyyden arviointia. 
+Muista olla aina kriittinen ja pohtia onko vastaus järkevä!
+
+``` {id="xvu509ULvIjm" plugin="csPlugin" #taylor_geo1}
+type: geogebra
+borders: false
+norun: true
+width: 650
+height: 500
+material_id: "vwzpkrbj"
+```
+
+#- {id="I7fuuA7SuHaS" area_end="lim_esim"}
+
+#- {id="1ktxrgeJEpsh" area="miksi_e" collapse="true"}
+[**Esimerkki**. Miksi $e^{ix} = \cos (x) + i\sin (x)$?]{.esimerkki}
+
+#- {id="GPvPa992VvXY"}
+Koska 
+$$
+e^x = 1+ x +\frac{1}{2!}x^2 + \frac{1}{3!}x^3+ \frac{1}{4!}x^4+\frac{1}{5!}x^5+ \dots,
+$$
+jolloin
+$$
+e^{ix} =  1+ ix -\frac{1}{2!}x^2 - i\frac{1}{3!}x^3 + \frac{1}{4!}x^4 + i\frac{1}{5!}x^5- \dots.
+$$
+Ryhmittelemällä termit uudelleen, saadaan
+
+\begin{align*}
+e^{ix} &= 1-\frac{1}{2!}x^2+\frac{1}{4!}x^4- \dots +  ix - i\frac{1}{3!}x^3 + i\frac{1}{5!}x^5- \dots \\
+&= \cos (x) + i\sin (x).
+\end{align*}
+
+#- {id="SxtkQ1fz9V8g" area_end="miksi_e"}
+
+#- {id="lFDMUYKutxry" area="kemia_ln_esim" collapse="true"}
+[**Esimerkki**. Mitä on $\ln (1{,}1)$?]{.esimerkki}
+
+#- {id="ltWt7WiJ6gUN"}
+Etsitään Taylorin neljännen kertaluvun polynomi funktiolle $f(x) = \ln (x)$ pisteen $x=1$ ympäristössä ja arvioidaan sen perusteella, mitä on $\ln (1{,}1)$.
+
+Lasketaan derivaatat,
+\begin{align*}
+&f(x) = \ln (x) &&f(1) = \ln (1)=\ln (e^0)=0\\
+&f'(x) =  \frac{1}{x} &&f'(1)=1\\
+&f''(x) = - \frac{1}{x^2} &&f''(1)=-1 \\
+&f^3(x) = \frac{2}{x^3} &&f^3(1) = 2 \\
+&f^4(x) = - \frac{6}{x^4}   &&f^4(1) = -6.
+\end{align*}
+
+Muodostetaan Taylorin polynomi pisteen $x=1$ ympäristössä
+\begin{align*}
+\ln (x) &\approx 0 +  1\cdot(x-1)-1\cdot \frac{(x-1)^2}{2!}+2\cdot \frac{(x-1)^3}{3!}-6\cdot \frac{(x-1)^4}{4!}\\
+&= x-1- \frac{(x-1)^2}{2}+ \frac{(x-1)^3}{3}- \frac{(x-1)^4}{4},
+\end{align*}
+jolloin
+
+\begin{align*}
+\ln (1{,}1) &\approx 1{,}1-1- \frac{(1{,}1-1)^2}{2}+ \frac{(1{,}1-1)^3}{3}- \frac{(1{,}1-1)^4}{4} \\
+&=0{,}1-\frac{(0{,}1)^2}{2}+ \frac{(0{,}1)^3}{3}- \frac{(0{,}1)^4}{4}\\
+&= 0{,}1 -0{,}005+0{,}0003333...- 0{,}000025\\
+&\approx 0{,}0953\red 0 8333 \approx 0{,}095 \quad (\text{Laskimen arvo = } 0{,}0953\red1 0179...) .
+\end{align*}
+
+#- {id="YeJCJV28YO8d" area_end="kemia_ln_esim"}
 
 ## Kahden muuttujan Taylorin sarja %%työnalla%% {id="oeIz0ocuTUWd" .timoranssi #taylor2d}
 
